@@ -1,0 +1,8 @@
+{
+    "extension.description": "An Azure Event Grid extension for Visual Studio Code.",
+    "refresh": "Refresh",
+    "selectSubscriptions": "Select Subscriptions...",
+    "loadMore": "Load More...",
+    "openInPortal": "Open In Portal",
+    "delete": "Delete"
+}

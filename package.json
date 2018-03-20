@@ -1,0 +1,240 @@
+{
+    "name": "vscode-azureeventgrid",
+    "displayName": "Azure Event Grid",
+    "description": "%extension.description%",
+    "version": "0.1.0",
+    "publisher": "ms-azuretools",
+    "icon": "resources/azureEventGrid.png",
+    "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
+    "engines": {
+        "vscode": "^1.20.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Microsoft/vscode-azureeventgrid"
+    },
+    "galleryBanner": {
+        "color": "#002050",
+        "theme": "dark"
+    },
+    "homepage": "https://github.com/Microsoft/vscode-azureeventgrid/blob/master/README.md",
+    "license": "MIT",
+    "categories": [
+        "Azure"
+    ],
+    "keywords": [
+        "Azure",
+        "EventGrid",
+        "multi-root ready"
+    ],
+    "preview": true,
+    "activationEvents": [
+        "onCommand:azureEventGrid.selectSubscriptions",
+        "onCommand:azureEventGridTopic.refresh",
+        "onCommand:azureEventGridTopic.loadMore",
+        "onCommand:azureEventGridTopic.openInPortal",
+        "onCommand:azureEventGridTopic.deleteTopic",
+        "onCommand:azureEventGridSubscription.refresh",
+        "onCommand:azureEventGridSubscription.loadMore",
+        "onCommand:azureEventGridSubscription.openInPortal",
+        "onCommand:azureEventGridSubscription.deleteEventSubscription",
+        "onView:azureEventGridTopicExplorer",
+        "onView:azureEventGridSubscriptionExplorer"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "azureEventGrid.selectSubscriptions",
+                "title": "%selectSubscriptions%",
+                "category": "Azure Event Grid",
+                "icon": {
+                    "light": "resources/light/filter.svg",
+                    "dark": "resources/dark/filter.svg"
+                }
+            },
+            {
+                "command": "azureEventGridTopic.refresh",
+                "title": "%refresh%",
+                "category": "Azure Event Grid Topic",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "azureEventGridTopic.loadMore",
+                "title": "%loadMore%",
+                "category": "Azure Event Grid Topic"
+            },
+            {
+                "command": "azureEventGridTopic.openInPortal",
+                "title": "%openInPortal%",
+                "category": "Azure Event Grid Topic"
+            },
+            {
+                "command": "azureEventGridTopic.deleteTopic",
+                "title": "%delete%",
+                "category": "Azure Event Grid Topic"
+            },
+            {
+                "command": "azureEventGridSubscription.refresh",
+                "title": "%refresh%",
+                "category": "Azure Event Grid Subscription",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "azureEventGridSubscription.loadMore",
+                "title": "%loadMore%",
+                "category": "Azure Event Grid Subscription"
+            },
+            {
+                "command": "azureEventGridSubscription.openInPortal",
+                "title": "%openInPortal%",
+                "category": "Azure Event Grid Subscription"
+            },
+            {
+                "command": "azureEventGridSubscription.deleteEventSubscription",
+                "title": "%delete%",
+                "category": "Azure Event Grid Subscription"
+            }
+        ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "azureEventGridTopicExplorer",
+                    "name": "Azure Event Grid Topics"
+                },
+                {
+                    "id": "azureEventGridSubscriptionExplorer",
+                    "name": "Azure Event Grid Subscriptions"
+                }
+            ]
+        },
+        "menus": {
+            "view/title": [
+                {
+                    "command": "azureEventGridTopic.refresh",
+                    "when": "view == azureEventGridTopicExplorer",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "azureEventGridSubscription.refresh",
+                    "when": "view == azureEventGridSubscriptionExplorer",
+                    "group": "navigation@1"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "azureEventGrid.selectSubscriptions",
+                    "when": "view == azureEventGridTopicExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "inline"
+                },
+                {
+                    "command": "azureEventGridTopic.openInPortal",
+                    "when": "view == azureEventGridTopicExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "1@1"
+                },
+                {
+                    "command": "azureEventGridTopic.refresh",
+                    "when": "view == azureEventGridTopicExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "2@1"
+                },
+                {
+                    "command": "azureEventGridTopic.openInPortal",
+                    "when": "view == azureEventGridTopicExplorer && viewItem == azureEventGridTopic",
+                    "group": "1@1"
+                },
+                {
+                    "command": "azureEventGridTopic.deleteTopic",
+                    "when": "view == azureEventGridTopicExplorer && viewItem == azureEventGridTopic",
+                    "group": "2@1"
+                },
+                {
+                    "command": "azureEventGrid.selectSubscriptions",
+                    "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "inline"
+                },
+                {
+                    "command": "azureEventGridSubscription.openInPortal",
+                    "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "1@1"
+                },
+                {
+                    "command": "azureEventGridSubscription.refresh",
+                    "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "2@1"
+                },
+                {
+                    "command": "azureEventGridSubscription.openInPortal",
+                    "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureEventGridSubscription",
+                    "group": "1@1"
+                },
+                {
+                    "command": "azureEventGridSubscription.deleteEventSubscription",
+                    "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureEventGridSubscription",
+                    "group": "2@1"
+                }
+            ],
+            "commandPalette": [
+                {
+                    "command": "azureEventGrid.selectSubscriptions",
+                    "when": "never"
+                },
+                {
+                    "command": "azureEventGridTopic.refresh",
+                    "when": "never"
+                },
+                {
+                    "command": "azureEventGridTopic.loadMore",
+                    "when": "never"
+                },
+                {
+                    "command": "azureEventGridSubscription.refresh",
+                    "when": "never"
+                },
+                {
+                    "command": "azureEventGridSubscription.loadMore",
+                    "when": "never"
+                }
+            ]
+        },
+        "configuration": [
+            {
+                "title": "Azure Event Grid",
+                "properties": {}
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "lint": "tslint --project tsconfig.json -t verbose",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "devDependencies": {
+        "@types/mocha": "^2.2.32",
+        "@types/node": "^8.0.28",
+        "azure-storage": "^2.8.1",
+        "gulp": "^3.9.1",
+        "mocha": "^2.3.3",
+        "tslint": "^5.7.0",
+        "tslint-microsoft-contrib": "5.0.1",
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "vsce": "^1.37.5"
+    },
+    "dependencies": {
+        "azure-arm-eventgrid": "^1.1.0-preview",
+        "azure-arm-resource": "^3.1.1-preview",
+        "vscode-azureextensionui": "~0.9.0",
+        "vscode-extension-telemetry": "^0.0.15",
+        "vscode-nls": "^2.0.2"
+    },
+    "extensionDependencies": [
+        "ms-vscode.azure-account"
+    ]
+}
