@@ -10,7 +10,6 @@ import { SubscriptionClient } from 'azure-arm-resource';
 import { Location } from 'azure-arm-resource/lib/subscription/models';
 import { IAzureNode, IAzureTreeItem, IChildProvider } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
-import { treeUtils } from '../../utils/treeUtils';
 import { EventSubscriptionTreeItem } from './EventSubscriptionTreeItem';
 
 export class EventSubscriptionProvider implements IChildProvider {
@@ -21,7 +20,7 @@ export class EventSubscriptionProvider implements IChildProvider {
     }
 
     public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = treeUtils.getEventGridClient(node);
+        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
 
         // There is no "listAll" method - we have to list individually by location
         const listByLocationTasks: Promise<EventSubscription[]>[] = (await listLocations(node)).map(async (location: Location) => {
@@ -45,6 +44,5 @@ export class EventSubscriptionProvider implements IChildProvider {
 
 async function listLocations(node: IAzureNode): Promise<Location[]> {
     const client: SubscriptionClient = new SubscriptionClient(node.credentials);
-    // tslint:disable-next-line:no-non-null-assertion
-    return await client.subscriptions.listLocations(node.subscription.subscriptionId!);
+    return await client.subscriptions.listLocations(node.subscriptionId);
 }

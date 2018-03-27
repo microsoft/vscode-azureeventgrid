@@ -45,7 +45,7 @@ export class TopicTreeItem implements IAzureTreeItem {
 
         extensionOutputChannel.show(true);
         extensionOutputChannel.appendLine(localize('deleting', 'Deleting topic "{0}"...', this._name));
-        const client: EventGridManagementClient = treeUtils.getEventGridClient(node);
+        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
         await client.topics.deleteMethod(this._resourceGroup, this._name);
         extensionOutputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted topic "{0}".', this._name));
     }

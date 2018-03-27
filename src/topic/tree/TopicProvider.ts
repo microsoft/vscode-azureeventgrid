@@ -8,7 +8,6 @@ import EventGridManagementClient = require('azure-arm-eventgrid');
 import { Topic, TopicsListResult } from 'azure-arm-eventgrid/lib/models';
 import { IAzureNode, IAzureTreeItem, IChildProvider } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
-import { treeUtils } from '../../utils/treeUtils';
 import { TopicTreeItem } from './TopicTreeItem';
 
 export class TopicProvider implements IChildProvider {
@@ -19,7 +18,7 @@ export class TopicProvider implements IChildProvider {
     }
 
     public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = treeUtils.getEventGridClient(node);
+        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
         const topics: TopicsListResult = await client.topics.listBySubscription();
         return topics.map((topic: Topic) => new TopicTreeItem(topic));
     }

@@ -44,7 +44,7 @@ export class EventSubscriptionTreeItem implements IAzureTreeItem {
 
         extensionOutputChannel.show(true);
         extensionOutputChannel.appendLine(localize('deleting', 'Deleting event subscription "{0}"...', this._name));
-        const client: EventGridManagementClient = treeUtils.getEventGridClient(node);
+        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
         await client.eventSubscriptions.deleteMethod(this._topic, this._name);
         extensionOutputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted event subscription "{0}".', this._name));
     }
