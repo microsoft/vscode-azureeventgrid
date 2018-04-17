@@ -4,5 +4,7 @@
     "selectSubscriptions": "Select Subscriptions...",
     "loadMore": "Load More...",
     "openInPortal": "Open In Portal",
+    "createEventSubscription": "Create Event Subscription",
+    "createTopic": "Create Topic",
     "delete": "Delete"
 }

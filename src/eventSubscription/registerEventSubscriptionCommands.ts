@@ -4,20 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { AzureActionHandler, AzureTreeDataProvider, IAzureNode, IAzureUserInput } from 'vscode-azureextensionui';
-import TelemetryReporter from 'vscode-extension-telemetry';
+import { AzureTreeDataProvider, IActionContext, IAzureNode, IAzureParentNode } from 'vscode-azureextensionui';
+import { createChildNode } from '../commands/createChildNode';
 import { deleteNode } from '../commands/deleteNode';
 import { openInPortal } from '../commands/openInPortal';
+import { ext } from '../extensionVariables';
 import { EventSubscriptionProvider } from './tree/EventSubscriptionProvider';
 import { EventSubscriptionTreeItem } from './tree/EventSubscriptionTreeItem';
 
-export function registerEventSubscriptionCommands(context: vscode.ExtensionContext, actionHandler: AzureActionHandler, ui: IAzureUserInput, reporter: TelemetryReporter | undefined): void {
-    const tree: AzureTreeDataProvider = new AzureTreeDataProvider(new EventSubscriptionProvider(), 'azureEventGridSubscription.loadMore', ui, reporter);
-    context.subscriptions.push(tree);
-    context.subscriptions.push(vscode.window.registerTreeDataProvider('azureEventGridSubscriptionExplorer', tree));
+export function registerEventSubscriptionCommands(): void {
+    ext.eventSubscriptionTree = new AzureTreeDataProvider(new EventSubscriptionProvider(), 'azureEventGridSubscription.loadMore', ext.ui, ext.reporter);
+    ext.context.subscriptions.push(ext.eventSubscriptionTree);
+    ext.context.subscriptions.push(vscode.window.registerTreeDataProvider('azureEventGridSubscriptionExplorer', ext.eventSubscriptionTree));
 
-    actionHandler.registerCommand('azureEventGridSubscription.refresh', async (node?: IAzureNode) => await tree.refresh(node));
-    actionHandler.registerCommand('azureEventGridSubscription.loadMore', async (node: IAzureNode) => await tree.loadMore(node));
-    actionHandler.registerCommand('azureEventGridSubscription.openInPortal', async (node?: IAzureNode) => await openInPortal(tree, EventSubscriptionTreeItem.contextValue, node));
-    actionHandler.registerCommand('azureEventGridSubscription.deleteEventSubscription', async (node?: IAzureNode) => await deleteNode(tree, EventSubscriptionTreeItem.contextValue, node));
+    ext.actionHandler.registerCommand('azureEventGridSubscription.refresh', async (node?: IAzureNode) => await ext.eventSubscriptionTree.refresh(node));
+    ext.actionHandler.registerCommand('azureEventGridSubscription.loadMore', async (node: IAzureNode) => await ext.eventSubscriptionTree.loadMore(node));
+    ext.actionHandler.registerCommand('azureEventGridSubscription.openInPortal', async (node?: IAzureNode) => await openInPortal(ext.eventSubscriptionTree, EventSubscriptionTreeItem.contextValue, node));
+    ext.actionHandler.registerCommand('azureEventGridSubscription.deleteEventSubscription', async (node?: IAzureNode) => await deleteNode(ext.eventSubscriptionTree, EventSubscriptionTreeItem.contextValue, node));
+    ext.actionHandler.registerCommand('azureEventGridSubscription.createEventSubscription', async function (this: IActionContext, node?: IAzureParentNode): Promise<void> { await createChildNode(this, ext.eventSubscriptionTree, AzureTreeDataProvider.subscriptionContextValue, node); });
 }

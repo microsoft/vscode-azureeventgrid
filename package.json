@@ -33,10 +33,12 @@
         "onCommand:azureEventGridTopic.refresh",
         "onCommand:azureEventGridTopic.loadMore",
         "onCommand:azureEventGridTopic.openInPortal",
+        "onCommand:azureEventGridTopic.createTopic",
         "onCommand:azureEventGridTopic.deleteTopic",
         "onCommand:azureEventGridSubscription.refresh",
         "onCommand:azureEventGridSubscription.loadMore",
         "onCommand:azureEventGridSubscription.openInPortal",
+        "onCommand:azureEventGridSubscription.createEventSubscription",
         "onCommand:azureEventGridSubscription.deleteEventSubscription",
         "onView:azureEventGridTopicExplorer",
         "onView:azureEventGridSubscriptionExplorer"
@@ -73,6 +75,11 @@
                 "category": "Azure Event Grid Topic"
             },
             {
+                "command": "azureEventGridTopic.createTopic",
+                "title": "%createTopic%",
+                "category": "Azure Event Grid Topic"
+            },
+            {
                 "command": "azureEventGridTopic.deleteTopic",
                 "title": "%delete%",
                 "category": "Azure Event Grid Topic"
@@ -94,6 +101,11 @@
             {
                 "command": "azureEventGridSubscription.openInPortal",
                 "title": "%openInPortal%",
+                "category": "Azure Event Grid Subscription"
+            },
+            {
+                "command": "azureEventGridSubscription.createEventSubscription",
+                "title": "%createEventSubscription%",
                 "category": "Azure Event Grid Subscription"
             },
             {
@@ -134,14 +146,19 @@
                     "group": "inline"
                 },
                 {
-                    "command": "azureEventGridTopic.openInPortal",
+                    "command": "azureEventGridTopic.createTopic",
                     "when": "view == azureEventGridTopicExplorer && viewItem == azureextensionui.azureSubscription",
                     "group": "1@1"
                 },
                 {
-                    "command": "azureEventGridTopic.refresh",
+                    "command": "azureEventGridTopic.openInPortal",
                     "when": "view == azureEventGridTopicExplorer && viewItem == azureextensionui.azureSubscription",
                     "group": "2@1"
+                },
+                {
+                    "command": "azureEventGridTopic.refresh",
+                    "when": "view == azureEventGridTopicExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "3@1"
                 },
                 {
                     "command": "azureEventGridTopic.openInPortal",
@@ -159,14 +176,19 @@
                     "group": "inline"
                 },
                 {
-                    "command": "azureEventGridSubscription.openInPortal",
+                    "command": "azureEventGridSubscription.createEventSubscription",
                     "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureextensionui.azureSubscription",
                     "group": "1@1"
                 },
                 {
-                    "command": "azureEventGridSubscription.refresh",
+                    "command": "azureEventGridSubscription.openInPortal",
                     "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureextensionui.azureSubscription",
                     "group": "2@1"
+                },
+                {
+                    "command": "azureEventGridSubscription.refresh",
+                    "when": "view == azureEventGridSubscriptionExplorer && viewItem == azureextensionui.azureSubscription",
+                    "group": "3@1"
                 },
                 {
                     "command": "azureEventGridSubscription.openInPortal",
@@ -230,7 +252,7 @@
     "dependencies": {
         "azure-arm-eventgrid": "^1.1.0-preview",
         "azure-arm-resource": "^3.1.1-preview",
-        "vscode-azureextensionui": "~0.11.1",
+        "vscode-azureextensionui": "~0.12.0",
         "vscode-extension-telemetry": "^0.0.15",
         "vscode-nls": "^2.0.2"
     },

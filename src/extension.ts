@@ -6,36 +6,36 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import { AzureActionHandler, AzureUserInput, callWithTelemetryAndErrorHandling, IActionContext, IAzureUserInput } from 'vscode-azureextensionui';
+import { AzureActionHandler, AzureUserInput, callWithTelemetryAndErrorHandling, IActionContext } from 'vscode-azureextensionui';
 import TelemetryReporter from 'vscode-extension-telemetry';
 import { registerEventSubscriptionCommands } from './eventSubscription/registerEventSubscriptionCommands';
+import { ext } from './extensionVariables';
 import { registerTopicCommands } from './topic/registerTopicCommands';
 
-export let extensionOutputChannel: vscode.OutputChannel;
-
 export function activate(context: vscode.ExtensionContext): void {
-    let reporter: TelemetryReporter | undefined;
+    ext.context = context;
+
     try {
         // tslint:disable-next-line:non-literal-require no-unsafe-any
         const packageInfo: IPackageInfo = require(context.asAbsolutePath('./package.json'));
-        reporter = new TelemetryReporter(packageInfo.name, packageInfo.version, packageInfo.aiKey);
+        ext.reporter = new TelemetryReporter(packageInfo.name, packageInfo.version, packageInfo.aiKey);
     } catch (error) {
         // swallow exceptions so that telemetry doesn't affect user
     }
 
-    extensionOutputChannel = vscode.window.createOutputChannel('Azure Event Grid');
-    context.subscriptions.push(extensionOutputChannel);
+    ext.outputChannel = vscode.window.createOutputChannel('Azure Event Grid');
+    context.subscriptions.push(ext.outputChannel);
 
     // tslint:disable-next-line:no-floating-promises
-    callWithTelemetryAndErrorHandling('azureEventGrid.activate', reporter, extensionOutputChannel, async function (this: IActionContext): Promise<void> {
+    callWithTelemetryAndErrorHandling('azureEventGrid.activate', ext.reporter, ext.outputChannel, async function (this: IActionContext): Promise<void> {
         this.properties.isActivationEvent = 'true';
-        const ui: IAzureUserInput = new AzureUserInput(context.globalState);
-        const actionHandler: AzureActionHandler = new AzureActionHandler(context, extensionOutputChannel, reporter);
+        ext.ui = new AzureUserInput(context.globalState);
+        ext.actionHandler = new AzureActionHandler(context, ext.outputChannel, ext.reporter);
 
-        registerTopicCommands(context, actionHandler, ui, reporter);
-        registerEventSubscriptionCommands(context, actionHandler, ui, reporter);
+        registerTopicCommands();
+        registerEventSubscriptionCommands();
 
-        actionHandler.registerCommand('azureEventGrid.selectSubscriptions', async () => await vscode.commands.executeCommand('azure-account.selectSubscriptions'));
+        ext.actionHandler.registerCommand('azureEventGrid.selectSubscriptions', async () => await vscode.commands.executeCommand('azure-account.selectSubscriptions'));
     });
 }
 

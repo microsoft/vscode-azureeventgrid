@@ -7,7 +7,7 @@
 import EventGridManagementClient = require('azure-arm-eventgrid');
 import { EventSubscription } from 'azure-arm-eventgrid/lib/models';
 import { DialogResponses, IAzureNode, IAzureTreeItem } from 'vscode-azureextensionui';
-import { extensionOutputChannel } from '../../extension';
+import { ext } from '../../extensionVariables';
 import { ArgumentError } from '../../utils/errors';
 import { localize } from '../../utils/localize';
 import { treeUtils } from '../../utils/treeUtils';
@@ -42,10 +42,10 @@ export class EventSubscriptionTreeItem implements IAzureTreeItem {
         const message: string = localize('confirmDelete', 'Are you sure you want to delete event subscription "{0}"?', this._name);
         await node.ui.showWarningMessage(message, DialogResponses.deleteResponse, DialogResponses.cancel);
 
-        extensionOutputChannel.show(true);
-        extensionOutputChannel.appendLine(localize('deleting', 'Deleting event subscription "{0}"...', this._name));
+        ext.outputChannel.show(true);
+        ext.outputChannel.appendLine(localize('deleting', 'Deleting event subscription "{0}"...', this._name));
         const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
         await client.eventSubscriptions.deleteMethod(this._topic, this._name);
-        extensionOutputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted event subscription "{0}".', this._name));
+        ext.outputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted event subscription "{0}".', this._name));
     }
 }
