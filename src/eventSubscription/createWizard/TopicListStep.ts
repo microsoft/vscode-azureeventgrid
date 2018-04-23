@@ -17,7 +17,7 @@ export class TopicListStep<T extends ITopicWizardContext> extends AzureWizardPro
         if (!wizardContext.topic) {
             const client: EventGridManagementClient = new EventGridManagementClient(wizardContext.credentials, wizardContext.subscriptionId);
 
-            const quickPickOptions: IAzureQuickPickOptions = { placeHolder: 'Select a topic.', id: `TopicListStep/${wizardContext.subscriptionId}` };
+            const quickPickOptions: IAzureQuickPickOptions = { placeHolder: localize('topicPlaceHolder', 'Select a topic'), id: `TopicListStep/${wizardContext.subscriptionId}` };
             wizardContext.topic = (await ui.showQuickPick(this.getQuickPicks(client.topics.listBySubscription()), quickPickOptions)).data;
 
             if (!wizardContext.topic) {
