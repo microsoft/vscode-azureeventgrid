@@ -4,20 +4,22 @@
  *--------------------------------------------------------------------------------------------*/
 
 import * as vscode from 'vscode';
-import { AzureActionHandler, AzureTreeDataProvider, IAzureNode, IAzureUserInput } from 'vscode-azureextensionui';
-import TelemetryReporter from 'vscode-extension-telemetry';
+import { AzureTreeDataProvider, IActionContext, IAzureNode, IAzureParentNode } from 'vscode-azureextensionui';
+import { createChildNode } from '../commands/createChildNode';
 import { deleteNode } from '../commands/deleteNode';
 import { openInPortal } from '../commands/openInPortal';
+import { ext } from '../extensionVariables';
 import { TopicProvider } from './tree/TopicProvider';
 import { TopicTreeItem } from './tree/TopicTreeItem';
 
-export function registerTopicCommands(context: vscode.ExtensionContext, actionHandler: AzureActionHandler, ui: IAzureUserInput, reporter: TelemetryReporter | undefined): void {
-    const tree: AzureTreeDataProvider = new AzureTreeDataProvider(new TopicProvider(), 'azureEventGridTopic.loadMore', ui, reporter);
-    context.subscriptions.push(tree);
-    context.subscriptions.push(vscode.window.registerTreeDataProvider('azureEventGridTopicExplorer', tree));
+export function registerTopicCommands(): void {
+    ext.topicTree = new AzureTreeDataProvider(new TopicProvider(), 'azureEventGridTopic.loadMore', ext.ui, ext.reporter);
+    ext.context.subscriptions.push(ext.topicTree);
+    ext.context.subscriptions.push(vscode.window.registerTreeDataProvider('azureEventGridTopicExplorer', ext.topicTree));
 
-    actionHandler.registerCommand('azureEventGridTopic.refresh', async (node?: IAzureNode) => await tree.refresh(node));
-    actionHandler.registerCommand('azureEventGridTopic.loadMore', async (node: IAzureNode) => await tree.loadMore(node));
-    actionHandler.registerCommand('azureEventGridTopic.openInPortal', async (node?: IAzureNode) => await openInPortal(tree, TopicTreeItem.contextValue, node));
-    actionHandler.registerCommand('azureEventGridTopic.deleteTopic', async (node?: IAzureNode) => await deleteNode(tree, TopicTreeItem.contextValue, node));
+    ext.actionHandler.registerCommand('azureEventGridTopic.refresh', async (node?: IAzureNode) => await ext.topicTree.refresh(node));
+    ext.actionHandler.registerCommand('azureEventGridTopic.loadMore', async (node: IAzureNode) => await ext.topicTree.loadMore(node));
+    ext.actionHandler.registerCommand('azureEventGridTopic.openInPortal', async (node?: IAzureNode) => await openInPortal(ext.topicTree, TopicTreeItem.contextValue, node));
+    ext.actionHandler.registerCommand('azureEventGridTopic.deleteTopic', async (node?: IAzureNode) => await deleteNode(ext.topicTree, TopicTreeItem.contextValue, node));
+    ext.actionHandler.registerCommand('azureEventGridTopic.createTopic', async function (this: IActionContext, node?: IAzureParentNode): Promise<void> { await createChildNode(this, ext.topicTree, AzureTreeDataProvider.subscriptionContextValue, node); });
 }

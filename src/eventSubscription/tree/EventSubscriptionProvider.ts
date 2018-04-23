@@ -8,8 +8,14 @@ import EventGridManagementClient = require('azure-arm-eventgrid');
 import { EventSubscription } from 'azure-arm-eventgrid/lib/models';
 import { SubscriptionClient } from 'azure-arm-resource';
 import { Location } from 'azure-arm-resource/lib/subscription/models';
-import { IAzureNode, IAzureTreeItem, IChildProvider } from 'vscode-azureextensionui';
+import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
+import { EndpointUrlStep } from '../createWizard/EndpointUrlStep';
+import { EventSubscriptionCreateStep } from '../createWizard/EventSubscriptionCreateStep';
+import { EventSubscriptionNameStep } from '../createWizard/EventSubscriptionNameStep';
+import { IEventSubscriptionWizardContext } from '../createWizard/IEventSubscriptionWizardContext';
+import { TopicTypeStep } from '../createWizard/TopicTypeStep';
 import { EventSubscriptionTreeItem } from './EventSubscriptionTreeItem';
 
 export class EventSubscriptionProvider implements IChildProvider {
@@ -39,6 +45,37 @@ export class EventSubscriptionProvider implements IChildProvider {
         });
         const eventSubscriptions: EventSubscription[] = (<EventSubscription[]>[]).concat(...(await Promise.all([client.eventSubscriptions.listGlobalBySubscription()].concat(...listByLocationTasks))));
         return eventSubscriptions.map((es: EventSubscription) => new EventSubscriptionTreeItem(es));
+    }
+
+    public async createChild(node: IAzureNode, showCreatingNode: (label: string) => void, actionContext?: IActionContext): Promise<IAzureTreeItem> {
+        const wizardContext: IEventSubscriptionWizardContext = {
+            credentials: node.credentials,
+            subscriptionId: node.subscriptionId,
+            subscriptionDisplayName: node.subscriptionDisplayName
+        };
+
+        const wizard: AzureWizard<IEventSubscriptionWizardContext> = new AzureWizard(
+            [
+                new EventSubscriptionNameStep(),
+                new TopicTypeStep(),
+                new EndpointUrlStep()
+            ],
+            [
+                new EventSubscriptionCreateStep()
+            ],
+            wizardContext
+        );
+
+        // https://github.com/Microsoft/vscode-azuretools/issues/120
+        // tslint:disable-next-line:strict-boolean-expressions
+        actionContext = actionContext || <IActionContext>{ properties: {}, measurements: {} };
+
+        await wizard.prompt(actionContext, ext.ui);
+        // tslint:disable-next-line:no-non-null-assertion
+        showCreatingNode(wizardContext.newEventSubscriptionName!);
+        await wizard.execute(actionContext, ext.outputChannel);
+        // tslint:disable-next-line:no-non-null-assertion
+        return new EventSubscriptionTreeItem(wizardContext.eventSubscription!);
     }
 }
 
