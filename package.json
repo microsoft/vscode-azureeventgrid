@@ -252,7 +252,7 @@
     "dependencies": {
         "azure-arm-eventgrid": "^1.1.0-preview",
         "azure-arm-resource": "^3.1.1-preview",
-        "vscode-azureextensionui": "~0.12.0",
+        "vscode-azureextensionui": "~0.12.1",
         "vscode-extension-telemetry": "^0.0.15",
         "vscode-nls": "^2.0.2"
     },

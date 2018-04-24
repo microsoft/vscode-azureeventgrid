@@ -40,7 +40,7 @@ export class EventSubscriptionTreeItem implements IAzureTreeItem {
 
     public async deleteTreeItem(node: IAzureNode<EventSubscriptionTreeItem>): Promise<void> {
         const message: string = localize('confirmDelete', 'Are you sure you want to delete event subscription "{0}"?', this._name);
-        await node.ui.showWarningMessage(message, DialogResponses.deleteResponse, DialogResponses.cancel);
+        await node.ui.showWarningMessage(message, { modal: true }, DialogResponses.deleteResponse, DialogResponses.cancel);
 
         ext.outputChannel.show(true);
         ext.outputChannel.appendLine(localize('deleting', 'Deleting event subscription "{0}"...', this._name));

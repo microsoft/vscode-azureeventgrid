@@ -41,7 +41,7 @@ export class TopicTreeItem implements IAzureTreeItem {
 
     public async deleteTreeItem(node: IAzureNode<TopicTreeItem>): Promise<void> {
         const message: string = localize('confirmDelete', 'Are you sure you want to delete topic "{0}"?', this._name);
-        await node.ui.showWarningMessage(message, DialogResponses.deleteResponse, DialogResponses.cancel);
+        await node.ui.showWarningMessage(message, { modal: true }, DialogResponses.deleteResponse, DialogResponses.cancel);
 
         ext.outputChannel.show(true);
         ext.outputChannel.appendLine(localize('deleting', 'Deleting topic "{0}"...', this._name));
