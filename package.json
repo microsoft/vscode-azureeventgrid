@@ -7,7 +7,7 @@
     "icon": "resources/azureEventGrid.png",
     "aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
     "engines": {
-        "vscode": "^1.20.0"
+        "vscode": "^1.23.0"
     },
     "repository": {
         "type": "git",
@@ -114,15 +114,24 @@
                 "category": "Azure Event Grid Subscription"
             }
         ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "azure",
+                    "title": "Azure",
+                    "icon": "resources/azure.svg"
+                }
+            ]
+        },
         "views": {
-            "explorer": [
+            "azure": [
                 {
                     "id": "azureEventGridTopicExplorer",
-                    "name": "Azure Event Grid Topics"
+                    "name": "Event Grid Topics"
                 },
                 {
                     "id": "azureEventGridSubscriptionExplorer",
-                    "name": "Azure Event Grid Subscriptions"
+                    "name": "Event Grid Subscriptions"
                 }
             ]
         },
