@@ -3,8 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// tslint:disable-next-line:no-require-imports
-import EventGridManagementClient = require('azure-arm-eventgrid');
+import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic, TopicsListResult } from 'azure-arm-eventgrid/lib/models';
 import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
