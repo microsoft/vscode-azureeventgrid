@@ -1,0 +1,57 @@
+{
+    "description": "Schema of the Data property of an EventGridEvent for a Microsoft.Resources event with additional metadata for generating mock values.",
+    "type": "object",
+    "properties": {
+        "authorization": {
+            "description": "The requested authorization for the operation.",
+            "type": "object"
+        },
+        "claims": {
+            "description": "The properties of the claims.",
+            "type": "object"
+        },
+        "correlationId": {
+            "description": "An operation ID used for troubleshooting.",
+            "type": "string",
+            "chance": "guid"
+        },
+        "resourceProvider": {
+            "description": "The resource provider performing the operation.",
+            "type": "string",
+            "pattern": "Microsoft\\.[a-zA-Z0-9]+"
+        },
+        "resourceUri": {
+            "description": "The URI of the resource in the operation.",
+            "type": "string",
+            "pattern": "/subscriptions\/[a-zA-Z0-9]+\/resourceGroups\/[a-zA-Z0-9]+\/providers\/Microsoft\\.[a-zA-Z0-9]+\/[a-zA-Z0-9]+"
+        },
+        "operationName": {
+            "description": "The operation that was performed.",
+            "type": "string",
+            "pattern": "Microsoft\\.[a-zA-Z0-9]+\/.[a-zA-Z0-9]+\/(write|delete)"
+        },
+        "status": {
+            "description": "The status of the operation.",
+            "type": "string",
+            "chance": {
+                "pickone": [
+                    [
+                        "Succeeded",
+                        "Failed",
+                        "Canceled"
+                    ]
+                ]
+            }
+        },
+        "subscriptionId": {
+            "description": "The subscription ID of the resource.",
+            "type": "string",
+            "chance": "guid"
+        },
+        "tenantId": {
+            "description": "The tenant ID of the resource.",
+            "type": "string",
+            "chance": "guid"
+        }
+    }
+}
