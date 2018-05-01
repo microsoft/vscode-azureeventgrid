@@ -3,8 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-// tslint:disable-next-line:no-require-imports
-import EventGridManagementClient = require('azure-arm-eventgrid');
+import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { WebHookEventSubscriptionDestination } from 'azure-arm-eventgrid/lib/models';
 import { OutputChannel } from 'vscode';
 import { AzureWizardExecuteStep, IResourceGroupWizardContext, IStorageAccountWizardContext } from 'vscode-azureextensionui';
