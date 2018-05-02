@@ -32,7 +32,20 @@ export class TopicTypeStep extends AzureWizardPromptStep<IEventSubscriptionWizar
                 case TopicType.StorageAccount:
                     this.subWizard = new AzureWizard(
                         [
-                            new StorageAccountListStep(StorageAccountKind.StorageV2, StorageAccountPerformance.Standard, StorageAccountReplication.LRS)
+                            new StorageAccountListStep(
+                                {
+                                    kind: StorageAccountKind.StorageV2,
+                                    performance: StorageAccountPerformance.Standard,
+                                    replication: StorageAccountReplication.LRS
+                                },
+                                {
+                                    kind: [
+                                        StorageAccountKind.BlobStorage,
+                                        StorageAccountKind.StorageV2
+                                    ],
+                                    learnMoreLink: 'https://aka.ms/H257ds'
+                                }
+                            )
                         ],
                         [],
                         wizardContext
