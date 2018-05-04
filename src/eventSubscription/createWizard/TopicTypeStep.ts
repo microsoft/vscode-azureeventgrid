@@ -40,8 +40,7 @@ export class TopicTypeStep extends AzureWizardPromptStep<IEventSubscriptionWizar
                                 },
                                 {
                                     kind: [
-                                        StorageAccountKind.BlobStorage,
-                                        StorageAccountKind.StorageV2
+                                        StorageAccountKind.Storage
                                     ],
                                     learnMoreLink: 'https://aka.ms/H257ds'
                                 }
