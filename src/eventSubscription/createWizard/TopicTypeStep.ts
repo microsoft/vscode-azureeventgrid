@@ -5,14 +5,20 @@
 
 import { AzureWizard, AzureWizardPromptStep, IAzureQuickPickItem, IAzureUserInput, ResourceGroupListStep, StorageAccountKind, StorageAccountListStep, StorageAccountPerformance, StorageAccountReplication } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
+import { ContainerRegistryListStep } from './ContainerRegistryListStep';
+import { EventHubsNamespaceListStep } from './EventHubsNamespaceListStep';
 import { IEventSubscriptionWizardContext } from "./IEventSubscriptionWizardContext";
+import { IoTHubListStep } from './IoTHubListStep';
 import { TopicListStep } from './TopicListStep';
 
 export enum TopicType {
-    StorageAccount = 'Storage Accounts',
     Subscription = 'Azure Subscriptions',
+    ContainerRegistry = 'Container Registries',
+    EventGridTopic = 'Event Grid Topics',
+    EventHubsNamespace = 'Event Hubs Namespaces',
+    IoTHub = 'IoT Hubs',
     ResourceGroup = 'Resource Groups',
-    EventGridTopic = 'Event Grid Topics'
+    StorageAccount = 'Storage Accounts'
 }
 
 export class TopicTypeStep extends AzureWizardPromptStep<IEventSubscriptionWizardContext> {
@@ -71,8 +77,35 @@ export class TopicTypeStep extends AzureWizardPromptStep<IEventSubscriptionWizar
                         wizardContext
                     );
                     break;
+                case TopicType.ContainerRegistry:
+                    this.subWizard = new AzureWizard(
+                        [
+                            new ContainerRegistryListStep()
+                        ],
+                        [],
+                        wizardContext
+                    );
+                    break;
+                case TopicType.EventHubsNamespace:
+                    this.subWizard = new AzureWizard(
+                        [
+                            new EventHubsNamespaceListStep()
+                        ],
+                        [],
+                        wizardContext
+                    );
+                    break;
+                case TopicType.IoTHub:
+                    this.subWizard = new AzureWizard(
+                        [
+                            new IoTHubListStep()
+                        ],
+                        [],
+                        wizardContext
+                    );
+                    break;
                 default:
-                    throw new Error(localize('unrecognizedTopicType', 'Unrecognized topic type "{0}".', wizardContext.topicType));
+                    throw new RangeError(localize('unrecognizedTopicType', 'Unrecognized topic type "{0}".', wizardContext.topicType));
             }
         }
 
