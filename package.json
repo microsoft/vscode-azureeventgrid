@@ -45,7 +45,7 @@
         "onCommand:azureEventGridSubscription.previewEvents",
         "onView:azureEventGridTopicExplorer",
         "onView:azureEventGridSubscriptionExplorer",
-        "workspaceContains:**/*.[eE][vV][eE][nN][tT][gG][eE][nN][eE][rR][aA][tT][oO][rR].[jJ][sS][oO][nN]"
+        "workspaceContains:**/*.[eE][vV][eE][nN][tT][gG][eE][nN][eE][rR][aA][tT][oO][rR].[jJ][sS][oO]{[nN],[nN][cC]}"
     ],
     "main": "./out/src/extension",
     "contributes": {
@@ -178,22 +178,22 @@
             "editor/context": [
                 {
                     "command": "azureEventGridSubscription.sendEvents",
-                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.json/i"
+                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.jsonc?/i"
                 },
                 {
                     "command": "azureEventGridSubscription.previewEvents",
-                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.json/i"
+                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.jsonc?/i"
                 }
             ],
             "editor/title": [
                 {
                     "command": "azureEventGridSubscription.sendEvents",
-                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.json/i",
+                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.jsonc?/i",
                     "group": "navigation"
                 },
                 {
                     "command": "azureEventGridSubscription.previewEvents",
-                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.json/i",
+                    "when": "resourceFilename=~ /.*\\.eventGenerator\\.jsonc?/i",
                     "group": "navigation"
                 }
             ],

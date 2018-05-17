@@ -72,13 +72,13 @@ export async function createMockEventGenerator(node?: IAzureNode<EventSubscripti
 }
 
 function getEventTypeFromTopic(topic: string): EventType {
-    if (!!/^\/subscriptions\/[^\/]+$/i.exec(topic)) {
+    if (/^\/subscriptions\/[^\/]+$/i.test(topic)) {
         return EventType.Resources;
-    } else if (!!/^\/subscriptions\/.*\/resourceGroups\/[^\/]+$/i.exec(topic)) {
+    } else if (/^\/subscriptions\/.*\/resourceGroups\/[^\/]+$/i.test(topic)) {
         return EventType.Resources;
-    } else if (!!/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.storage\/storageaccounts\/[^\/]+$/i.exec(topic)) {
+    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.storage\/storageaccounts\/[^\/]+$/i.test(topic)) {
         return EventType.Storage;
-    } else if (!!/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.eventgrid\/topics\/[^\/]+$/i.exec(topic)) {
+    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.eventgrid\/topics\/[^\/]+$/i.test(topic)) {
         return EventType.Custom;
     } else {
         throw new Error(localize('unsupportedType', 'The topic type for this Event Subscription is not yet supported.'));

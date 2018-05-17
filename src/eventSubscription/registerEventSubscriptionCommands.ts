@@ -21,7 +21,7 @@ export function registerEventSubscriptionCommands(): void {
     ext.context.subscriptions.push(ext.eventSubscriptionTree);
     ext.context.subscriptions.push(vscode.window.registerTreeDataProvider('azureEventGridSubscriptionExplorer', ext.eventSubscriptionTree));
 
-    ext.context.subscriptions.push(vscode.languages.registerCodeLensProvider({ language: 'json', pattern: '**/*.[eE][vV][eE][nN][tT][gG][eE][nN][eE][rR][aA][tT][oO][rR].[jJ][sS][oO][nN]' }, new MockCodeLensProvider()));
+    ext.context.subscriptions.push(vscode.languages.registerCodeLensProvider({ pattern: '**/*.[eE][vV][eE][nN][tT][gG][eE][nN][eE][rR][aA][tT][oO][rR].[jJ][sS][oO]{[nN],[nN][cC]}' }, new MockCodeLensProvider()));
 
     ext.actionHandler.registerCommand('azureEventGridSubscription.refresh', async (node?: IAzureNode) => await ext.eventSubscriptionTree.refresh(node));
     ext.actionHandler.registerCommand('azureEventGridSubscription.loadMore', async (node: IAzureNode) => await ext.eventSubscriptionTree.loadMore(node));

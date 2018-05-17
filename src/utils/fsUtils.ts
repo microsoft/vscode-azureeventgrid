@@ -15,7 +15,7 @@ export namespace fsUtils {
         const maxCount: number = 1024;
 
         while (count < maxCount) {
-            const fullFileName: string = `${prefix}${count === 0 ? '' : `-${count.toString()}`}${suffix}`;
+            const fullFileName: string = `${prefix}${count === 0 ? '' : `-${count}`}${suffix}`;
 
             const fullPath: string = path.join(folderPath, fullFileName);
 
