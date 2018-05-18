@@ -9,7 +9,10 @@ import { OutputChannel } from 'vscode';
 import { AzureWizardExecuteStep, IResourceGroupWizardContext, IStorageAccountWizardContext } from 'vscode-azureextensionui';
 import { ITopicWizardContext } from '../../topic/createWizard/ITopicWizardContext';
 import { localize } from '../../utils/localize';
+import { IContainerRegistryWizardContext } from './ContainerRegistryListStep';
+import { IEventHubsNamespaceWizardContext } from './EventHubsNamespaceListStep';
 import { IEventSubscriptionWizardContext } from "./IEventSubscriptionWizardContext";
+import { IIoTHubWizardContext } from './IoTHubListStep';
 import { TopicType } from './TopicTypeStep';
 
 export class EventSubscriptionCreateStep extends AzureWizardExecuteStep<IEventSubscriptionWizardContext> {
@@ -31,6 +34,18 @@ export class EventSubscriptionCreateStep extends AzureWizardExecuteStep<IEventSu
                 case TopicType.EventGridTopic:
                     // tslint:disable-next-line:no-non-null-assertion
                     topicId = (<ITopicWizardContext>wizardContext).topic!.id!;
+                    break;
+                case TopicType.ContainerRegistry:
+                    // tslint:disable-next-line:no-non-null-assertion
+                    topicId = (<IContainerRegistryWizardContext>wizardContext).registry!.id!;
+                    break;
+                case TopicType.EventHubsNamespace:
+                    // tslint:disable-next-line:no-non-null-assertion
+                    topicId = (<IEventHubsNamespaceWizardContext>wizardContext).eventHubsNamespace!.id!;
+                    break;
+                case TopicType.IoTHub:
+                    // tslint:disable-next-line:no-non-null-assertion
+                    topicId = (<IIoTHubWizardContext>wizardContext).iotHub!.id!;
                     break;
                 default:
                     throw new Error(localize('unrecognizedTopicType', 'Unrecognized topic type "{0}".', wizardContext.topicType));
