@@ -15,9 +15,8 @@ export class EventSubscriptionTreeItem implements IAzureTreeItem {
     public static contextValue: string = 'azureEventGridSubscription';
     public readonly contextValue: string = EventSubscriptionTreeItem.contextValue;
     public readonly id: string;
-
-    private readonly _name: string;
-    private readonly _topic: string;
+    public readonly topic: string;
+    public readonly name: string;
 
     public constructor(eventSubscription: EventSubscription) {
         if (!eventSubscription.id || !eventSubscription.name || !eventSubscription.topic) {
@@ -25,12 +24,12 @@ export class EventSubscriptionTreeItem implements IAzureTreeItem {
         }
 
         this.id = eventSubscription.id;
-        this._name = eventSubscription.name;
-        this._topic = eventSubscription.topic;
+        this.name = eventSubscription.name;
+        this.topic = eventSubscription.topic;
     }
 
     public get label(): string {
-        return this._name;
+        return this.name;
     }
 
     public get iconPath(): string {
@@ -38,13 +37,13 @@ export class EventSubscriptionTreeItem implements IAzureTreeItem {
     }
 
     public async deleteTreeItem(node: IAzureNode<EventSubscriptionTreeItem>): Promise<void> {
-        const message: string = localize('confirmDelete', 'Are you sure you want to delete event subscription "{0}"?', this._name);
+        const message: string = localize('confirmDelete', 'Are you sure you want to delete event subscription "{0}"?', this.name);
         await node.ui.showWarningMessage(message, { modal: true }, DialogResponses.deleteResponse, DialogResponses.cancel);
 
         ext.outputChannel.show(true);
-        ext.outputChannel.appendLine(localize('deleting', 'Deleting event subscription "{0}"...', this._name));
+        ext.outputChannel.appendLine(localize('deleting', 'Deleting event subscription "{0}"...', this.name));
         const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
-        await client.eventSubscriptions.deleteMethod(this._topic, this._name);
-        ext.outputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted event subscription "{0}".', this._name));
+        await client.eventSubscriptions.deleteMethod(this.topic, this.name);
+        ext.outputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted event subscription "{0}".', this.name));
     }
 }

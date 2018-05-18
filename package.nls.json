@@ -1,6 +1,9 @@
 {
     "extension.description": "An Azure Event Grid extension for Visual Studio Code.",
     "refresh": "Refresh",
+    "createMockEventGenerator": "Create Mock Event Generator",
+    "sendEvents": "Send Events",
+    "previewEvents": "Preview Events",
     "selectSubscriptions": "Select Subscriptions...",
     "loadMore": "Load More...",
     "openInPortal": "Open In Portal",
