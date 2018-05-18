@@ -1,5 +1,5 @@
 {
-    "description": "Schema of the Data property of an EventGridEvent for a Microsoft.Resources event with additional metadata for generating mock values.",
+    "description": "Schema of the data property of an Event Grid event for a Microsoft.Resources event with additional metadata for generating mock values.",
     "type": "object",
     "properties": {
         "authorization": {
