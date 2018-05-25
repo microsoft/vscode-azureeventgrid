@@ -16,6 +16,9 @@ import { IMockEventGenerator } from './IMockEventGenerator';
 export enum EventType {
     Storage = 'Microsoft.Storage',
     Resources = 'Microsoft.Resources',
+    ContainerRegistry = 'Microsoft.ContainerRegistry',
+    Devices = 'Microsoft.Devices',
+    EventHub = 'Microsoft.EventHub',
     Custom = 'Fabrikam'
 }
 
@@ -40,6 +43,22 @@ export async function createMockEventGenerator(node?: IAzureNode<EventSubscripti
             eventSubTypePattern = 'Resource(Write|Delete)(Success|Failure|Cancel)';
             subjectPattern = '/subscriptions\/[a-zA-Z0-9]+\/resourceGroups\/[a-zA-Z0-9]+\/providers\/Microsoft\\.[a-zA-Z0-9]+\/[a-zA-Z0-9]+';
             break;
+        case EventType.ContainerRegistry:
+            fileName = 'ContainerRegistry';
+            eventSubTypePattern = 'Image(Pushed|Deleted)';
+            subjectPattern = '[a-zA-Z0-9]+:[0-9]\\.[0-9]\\.[0-9]';
+            break;
+        case EventType.Devices:
+            fileName = 'IotHub';
+            eventSubTypePattern = 'Device(Created|Deleted)';
+            subjectPattern = 'devices/[a-zA-Z0-9]+';
+            break;
+        case EventType.EventHub:
+            fileName = 'EventHub';
+            eventSubTypePattern = 'CaptureFileCreated';
+            // Get the event hub name from the topic id and use that as the subject
+            subjectPattern = node.treeItem.topic.substring(node.treeItem.topic.lastIndexOf('/') + 1);
+            break;
         case EventType.Custom:
             eventSubTypePattern = '[a-zA-Z0-9]+';
             subjectPattern = '[a-zA-Z0-9]+';
@@ -57,6 +76,11 @@ export async function createMockEventGenerator(node?: IAzureNode<EventSubscripti
     eventSchema.properties.topic.default = node.treeItem.topic;
     eventSchema.properties.eventType.pattern = `${eventType.replace('.', '\\.')}\\.${eventSubTypePattern}`;
     eventSchema.properties.subject.pattern = subjectPattern;
+
+    const definitionsPath: string = path.join(templatesPath, 'definitions', `${fileName}.json`);
+    if (await fse.pathExists(definitionsPath)) {
+        eventSchema.definitions = <{}>await fse.readJson(definitionsPath);
+    }
 
     const eventGenerator: IMockEventGenerator = {
         eventSubscriptionId: node.id,
@@ -78,6 +102,12 @@ function getEventTypeFromTopic(topic: string): EventType {
         return EventType.Resources;
     } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.storage\/storageaccounts\/[^\/]+$/i.test(topic)) {
         return EventType.Storage;
+    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.containerregistry\/registries\/[^\/]+$/i.test(topic)) {
+        return EventType.ContainerRegistry;
+    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.devices\/iothubs\/[^\/]+$/i.test(topic)) {
+        return EventType.Devices;
+    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.eventhub\/namespaces\/[^\/]+$/i.test(topic)) {
+        return EventType.EventHub;
     } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.eventgrid\/topics\/[^\/]+$/i.test(topic)) {
         return EventType.Custom;
     } else {
