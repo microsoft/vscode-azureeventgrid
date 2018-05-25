@@ -12,10 +12,19 @@ export class EndpointUrlStep extends AzureWizardPromptStep<IEventSubscriptionWiz
         if (!wizardContext.endpointUrl) {
             wizardContext.endpointUrl = (await ui.showInputBox({
                 placeHolder: localize('urlPlaceholder', 'Subscriber Endpoint'),
-                prompt: localize('urlPrompt', 'Provide a subscriber endpoint.')
+                prompt: localize('urlPrompt', 'Provide a subscriber endpoint.'),
+                validateInput: this.validateInput
             })).trim();
         }
 
         return wizardContext;
+    }
+
+    private validateInput(value: string | undefined): string | undefined {
+        if (!value) {
+            return localize('noEmpty', 'Subscriber endpoint cannot be empty.');
+        } else {
+            return undefined;
+        }
     }
 }

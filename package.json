@@ -81,7 +81,11 @@
             {
                 "command": "azureEventGridTopic.createTopic",
                 "title": "%createTopic%",
-                "category": "Azure Event Grid Topic"
+                "category": "Azure Event Grid Topic",
+                "icon": {
+                    "light": "resources/light/add.svg",
+                    "dark": "resources/dark/add.svg"
+                }
             },
             {
                 "command": "azureEventGridTopic.deleteTopic",
@@ -110,7 +114,11 @@
             {
                 "command": "azureEventGridSubscription.createEventSubscription",
                 "title": "%createEventSubscription%",
-                "category": "Azure Event Grid Subscription"
+                "category": "Azure Event Grid Subscription",
+                "icon": {
+                    "light": "resources/light/add.svg",
+                    "dark": "resources/dark/add.svg"
+                }
             },
             {
                 "command": "azureEventGridSubscription.deleteEventSubscription",
@@ -165,14 +173,24 @@
         "menus": {
             "view/title": [
                 {
+                    "command": "azureEventGridTopic.createTopic",
+                    "when": "view == azureEventGridTopicExplorer",
+                    "group": "navigation@1"
+                },
+                {
                     "command": "azureEventGridTopic.refresh",
                     "when": "view == azureEventGridTopicExplorer",
+                    "group": "navigation@2"
+                },
+                {
+                    "command": "azureEventGridSubscription.createEventSubscription",
+                    "when": "view == azureEventGridSubscriptionExplorer",
                     "group": "navigation@1"
                 },
                 {
                     "command": "azureEventGridSubscription.refresh",
                     "when": "view == azureEventGridSubscriptionExplorer",
-                    "group": "navigation@1"
+                    "group": "navigation@2"
                 }
             ],
             "editor/context": [
