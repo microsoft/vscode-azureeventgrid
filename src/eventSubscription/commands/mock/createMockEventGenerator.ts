@@ -95,22 +95,27 @@ export async function createMockEventGenerator(node?: IAzureNode<EventSubscripti
     await fsUtils.showNewFile(JSON.stringify(eventGenerator, undefined, 2), node.treeItem.label, '.eventGenerator.json');
 }
 
-function getEventTypeFromTopic(topic: string): EventType {
-    if (/^\/subscriptions\/[^\/]+$/i.test(topic)) {
+export function getEventTypeFromTopic(topic: string): EventType {
+    if (/^\/subscriptions\/[^\/]+$/i.test(topic) || /^\/subscriptions\/.*\/resourceGroups\/[^\/]+$/i.test(topic)) {
         return EventType.Resources;
-    } else if (/^\/subscriptions\/.*\/resourceGroups\/[^\/]+$/i.test(topic)) {
-        return EventType.Resources;
-    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.storage\/storageaccounts\/[^\/]+$/i.test(topic)) {
-        return EventType.Storage;
-    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.containerregistry\/registries\/[^\/]+$/i.test(topic)) {
-        return EventType.ContainerRegistry;
-    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.devices\/iothubs\/[^\/]+$/i.test(topic)) {
-        return EventType.Devices;
-    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.eventhub\/namespaces\/[^\/]+$/i.test(topic)) {
-        return EventType.EventHub;
-    } else if (/^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/microsoft.eventgrid\/topics\/[^\/]+$/i.test(topic)) {
-        return EventType.Custom;
     } else {
+        const result: RegExpExecArray | null = /^\/subscriptions\/.*\/resourceGroups\/.*\/providers\/(.*)\/[^\/]+$/i.exec(topic);
+        if (result && result.length > 1) {
+            switch (result[1].toLowerCase()) {
+                case 'microsoft.storage/storageaccounts':
+                    return EventType.Storage;
+                case 'microsoft.containerregistry/registries':
+                    return EventType.ContainerRegistry;
+                case 'microsoft.devices/iothubs':
+                    return EventType.Devices;
+                case 'microsoft.eventhub/namespaces':
+                    return EventType.EventHub;
+                case 'microsoft.eventgrid/topics':
+                    return EventType.Custom;
+                default:
+            }
+        }
+
         throw new Error(localize('unsupportedType', 'The topic type for this Event Subscription is not yet supported.'));
     }
 }
