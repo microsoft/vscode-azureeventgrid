@@ -4,6 +4,13 @@
 
 ## Features
 
+### Event Grid Explorers
+
+* Create and delete Event Grid resources
+* View Event Grid resources and open directly in the portal
+
+![explorer](resources/explorer.png)
+
 ### Generate Mock Events
 
 This extension makes it easy to generate and send mock events to your Event Grid subscriptions. It leverages [json-schema-faker](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md) to automatically generate mock data from a json schema. In order to get started, right click on an Event Subscription and select 'Create Mock Event Generator'. A json file with the following properties will be created:
@@ -14,6 +21,20 @@ This extension makes it easy to generate and send mock events to your Event Grid
 * eventSchema: The JSON schema for your specific event, with additional metadata on how to generate mock data. You may use the [standard keywords](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#supported-keywords) supported by json-schema-faker or [Chance.js](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#advanced-usage-of-fakerjs-and-chancejs) for more advanced scenarios.
 
 Once you have an event generator, you can customize the schema, select "Preview Events" to see what gets generated, and select "Send Events" to send generated events to your Event Subscription's endpoint.
+
+## Managing Azure Subscriptions
+
+If you are not signed in to Azure, you will see a "Sign in to Azure..." link. Alternatively, you can select "View->Command Palette" in the VS Code menu, and search for "Azure: Sign In".
+
+![Sign in to Azure](resources/SignIn.gif)
+
+If you don't have an Azure Account, you can sign up for one today for free and receive $200 in credits by selecting "Create a Free Azure Account..." or selecting "View->Command Palette" and searching for "Azure: Create an Account".
+
+You may sign out of Azure by selecting "View->Command Palette" and searching for "Azure: Sign Out".
+
+To select which subscriptions show up in the extension's explorer, click on the "Select Subscriptions..." button on any subscription node (indicated by a "filter" icon when you hover over it), or select "View->Command Palette" and search for "Azure: Select Subscriptions". Note that this selection affects all VS Code extensions that support the [Azure Account and Sign-In](https://github.com/Microsoft/vscode-azure-account) extension.
+
+![Select Azure Subscriptions](resources/SelectSubscriptions.gif)
 
 ## Contributing
 
