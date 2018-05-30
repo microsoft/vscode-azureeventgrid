@@ -11,4 +11,5 @@ export interface IEventSchema {
             default?: string
         }
     };
+    definitions?: object;
 }

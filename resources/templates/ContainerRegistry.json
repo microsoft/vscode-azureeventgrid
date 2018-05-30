@@ -1,0 +1,36 @@
+{
+    "description": "Schema of the data property of an Event Grid event for a Microsoft.ContainerRegistry event with additional metadata for generating mock values.",
+    "properties": {
+        "id": {
+            "description": "The event ID.",
+            "type": "string",
+            "chance": "guid"
+        },
+        "timestamp": {
+            "format": "date-time",
+            "description": "The time at which the event occurred.",
+            "type": "string"
+        },
+        "action": {
+            "description": "The action that encompasses the provided event.",
+            "type": "string",
+            "pattern": "(push|delete)"
+        },
+        "target": {
+            "$ref": "#/definitions/ContainerRegistryEventTarget",
+            "description": "The target of the event."
+        },
+        "request": {
+            "$ref": "#/definitions/ContainerRegistryEventRequest",
+            "description": "The request that generated the event."
+        },
+        "actor": {
+            "$ref": "#/definitions/ContainerRegistryEventActor",
+            "description": "The agent that initiated the event. For most situations, this could be from the authorization context of the request."
+        },
+        "source": {
+            "$ref": "#/definitions/ContainerRegistryEventSource",
+            "description": "The registry node that generated the event. Put differently, while the actor initiates the event, the source generates it."
+        }
+    }
+}

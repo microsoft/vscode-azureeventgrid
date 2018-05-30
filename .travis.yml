@@ -19,7 +19,7 @@ script:
   - gulp package
   - gulp upload-vsix
   - npm run lint
-  - npm test
+  - gulp test
 
 notifications:
   email:

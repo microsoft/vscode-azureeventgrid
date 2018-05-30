@@ -8,6 +8,14 @@ const path = require('path');
 const azureStorage = require('azure-storage');
 const vsce = require('vsce');
 const packageJson = require('./package.json');
+const cp = require('child_process');
+
+gulp.task('test', (cb) => {
+    const cmd = cp.spawn('node', ['./node_modules/vscode/bin/test'], { stdio: 'inherit' });
+    cmd.on('close', (code) => {
+        cb(code);
+    });
+});
 
 gulp.task('package', async () => {
     await vsce.createVSIX();
