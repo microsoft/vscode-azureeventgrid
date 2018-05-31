@@ -7,7 +7,7 @@ import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { EventSubscription } from 'azure-arm-eventgrid/lib/models';
 import { SubscriptionClient } from 'azure-arm-resource';
 import { Location } from 'azure-arm-resource/lib/subscription/models';
-import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider } from 'vscode-azureextensionui';
+import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, parseError } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 import { EndpointUrlStep } from '../createWizard/EndpointUrlStep';
@@ -34,8 +34,7 @@ export class EventSubscriptionProvider implements IChildProvider {
                 return await client.eventSubscriptions.listRegionalBySubscription(location.name!);
             } catch (error) {
                 // Ignore errors for regions where EventGrid is not supported
-                // tslint:disable-next-line:no-unsafe-any
-                if (error && error.code === 'NoRegisteredProviderFound') {
+                if (parseError(error).errorType === 'NoRegisteredProviderFound') {
                     return [];
                 } else {
                     throw error;
