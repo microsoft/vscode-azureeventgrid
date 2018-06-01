@@ -13,12 +13,16 @@
 
 ### Generate Mock Events
 
-This extension makes it easy to generate and send mock events to your Event Grid subscriptions. It leverages [json-schema-faker](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md) to automatically generate mock data from a json schema. In order to get started, right click on an Event Subscription and select 'Create Mock Event Generator'. A json file with the following properties will be created:
+This extension makes it easy to generate and send mock events to your Event Grid subscriptions. It leverages [json-schema-faker](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md) to automatically generate mock data from a json schema. If you have an existing Event Subscription, you can right click on that resource and select 'Create Mock Event Generator'. You may also select 'Create Mock Event Generator' from the title bar if you want to send events of any type to an arbitrary endpoint.
 
-* eventSubscriptionId: The Event Subscription to use when sending events.
+![CreateEventGeneratorFromExisting](resources/CreateEventGeneratorFromExisting.png)![CreateEventGenerator](resources/CreateEventGenerator.png)
+
+A json file with the following properties will be created:
+
+* destination: The destination to use when sending events. The endpointUrl can be specified directly, or you can specify the id of an Event Subscription and the endpointUrl will be automatically determined for that resource.
 * numberOfEvents: The number of events to generate and send.
 * jsonSchemaFakerOptions: The [options](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#custom-options) to pass in to json-schema-faker.
-* eventSchema: The JSON schema for your specific event, with additional metadata on how to generate mock data. You may use the [standard keywords](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#supported-keywords) supported by json-schema-faker or [Chance.js](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#advanced-usage-of-fakerjs-and-chancejs) for more advanced scenarios.
+* schema: The JSON schema for your specific event, with additional metadata on how to generate mock data. You may use the [standard keywords](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#supported-keywords) supported by json-schema-faker or [Chance.js](https://github.com/json-schema-faker/json-schema-faker/blob/master/README.md#advanced-usage-of-fakerjs-and-chancejs) for more advanced scenarios.
 
 Once you have an event generator, you can customize the schema, select "Preview Events" to see what gets generated, and select "Send Events" to send generated events to your Event Subscription's endpoint.
 

@@ -128,7 +128,11 @@
             {
                 "command": "azureEventGridSubscription.createMockEventGenerator",
                 "title": "%createMockEventGenerator%",
-                "category": "Azure Event Grid Subscription"
+                "category": "Azure Event Grid Subscription",
+                "icon": {
+                    "light": "resources/light/addTest.svg",
+                    "dark": "resources/dark/addTest.svg"
+                }
             },
             {
                 "command": "azureEventGridSubscription.sendEvents",
@@ -188,9 +192,14 @@
                     "group": "navigation@1"
                 },
                 {
-                    "command": "azureEventGridSubscription.refresh",
+                    "command": "azureEventGridSubscription.createMockEventGenerator",
                     "when": "view == azureEventGridSubscriptionExplorer",
                     "group": "navigation@2"
+                },
+                {
+                    "command": "azureEventGridSubscription.refresh",
+                    "when": "view == azureEventGridSubscriptionExplorer",
+                    "group": "navigation@3"
                 }
             ],
             "editor/context": [
@@ -313,6 +322,32 @@
                 }
             ]
         },
+        "jsonValidation": [
+            {
+                "fileMatch": "*.EventGenerator.json",
+                "url": "./resources/eventGeneratorSchema.json"
+            },
+            {
+                "fileMatch": "*.EventGenerator.jsonc",
+                "url": "./resources/eventGeneratorSchema.json"
+            },
+            {
+                "fileMatch": "*.eventGenerator.json",
+                "url": "./resources/eventGeneratorSchema.json"
+            },
+            {
+                "fileMatch": "*.eventGenerator.jsonc",
+                "url": "./resources/eventGeneratorSchema.json"
+            },
+            {
+                "fileMatch": "*.eventgenerator.json",
+                "url": "./resources/eventGeneratorSchema.json"
+            },
+            {
+                "fileMatch": "*.eventgenerator.jsonc",
+                "url": "./resources/eventGeneratorSchema.json"
+            }
+        ],
         "configuration": [
             {
                 "title": "Azure Event Grid",
