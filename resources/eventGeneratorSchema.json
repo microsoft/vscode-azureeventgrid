@@ -1,0 +1,77 @@
+{
+    "title": "JSON schema for Event Grid mock event generator.",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "destination": {
+            "type": "object",
+            "description": "The destination to use when sending events. The endpointUrl can be specified directly, or you can specify the id of an Event Subscription and the endpointUrl will be automatically determined for that resource.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "eventSubscriptionId": {
+                            "description": "The id of the Event Subscription to use when sending events."
+                        }
+                    },
+                    "required": [
+                        "eventSubscriptionId"
+                    ]
+                },
+                {
+                    "properties": {
+                        "endpointUrl": {
+                            "description": "The endpoint url to use when sending events."
+                        }
+                    },
+                    "required": [
+                        "endpointUrl"
+                    ]
+                }
+            ]
+        },
+        "numberOfEvents": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of events to generate and send (default: 1)."
+        },
+        "jsonSchemaFakerOptions": {
+            "type": "object",
+            "description": "The options to pass in to json-schema-faker",
+            "properties": {
+                "alwaysFakeOptionals": {
+                    "type": "boolean",
+                    "description": "When true, all object properties will be generated even if they're not required."
+                },
+                "maxItems": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Configure a maximum amount of items to generate in an array. This will override the maximum items found inside the event schema."
+                },
+                "maxLength": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Configure a maximum length to allow generating strings for. This will override the maximum length found inside the event schema."
+                },
+                "optionalsProbability": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "A decimal number from 0 to 1 that indicates the probability to fake a non-required object property (default: 0). When 0.0, only required properties will be generated; when 1.0, all properties are generated. This option is overwritten to 1 when alwaysFakeOptionals = true."
+                },
+                "useDefaultValue": {
+                    "type": "boolean",
+                    "description": "Use the default value as the generated value."
+                }
+            }
+        },
+        "schema": {
+            "type": "object",
+            "description": "JSON schema for the Event Grid event.",
+            "$ref": "http://json-schema.org/draft-07/schema#"
+        }
+    },
+    "required": [
+        "destination",
+        "schema"
+    ]
+}

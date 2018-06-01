@@ -28,7 +28,7 @@ export function registerEventSubscriptionCommands(): void {
     ext.actionHandler.registerCommand('azureEventGridSubscription.openInPortal', async (node?: IAzureNode) => await openInPortal(ext.eventSubscriptionTree, EventSubscriptionTreeItem.contextValue, node));
     ext.actionHandler.registerCommand('azureEventGridSubscription.deleteEventSubscription', async (node?: IAzureNode) => await deleteNode(ext.eventSubscriptionTree, EventSubscriptionTreeItem.contextValue, node));
     ext.actionHandler.registerCommand('azureEventGridSubscription.createEventSubscription', async function (this: IActionContext, node?: IAzureParentNode): Promise<void> { await createChildNode(this, ext.eventSubscriptionTree, AzureTreeDataProvider.subscriptionContextValue, node); });
-    ext.actionHandler.registerCommand('azureEventGridSubscription.createMockEventGenerator', async (node?: IAzureNode<EventSubscriptionTreeItem>) => await createMockEventGenerator(node));
+    ext.actionHandler.registerCommand('azureEventGridSubscription.createMockEventGenerator', async function (this: IActionContext, node?: IAzureNode<EventSubscriptionTreeItem>): Promise<void> { await createMockEventGenerator(this, node); });
     ext.actionHandler.registerCommand('azureEventGridSubscription.sendEvents', async (uri: vscode.Uri) => await sendEvents(uri));
     ext.actionHandler.registerCommand('azureEventGridSubscription.previewEvents', async (uri: vscode.Uri) => await previewEvents(uri));
 }

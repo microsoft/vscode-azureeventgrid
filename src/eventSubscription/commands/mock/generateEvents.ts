@@ -27,9 +27,11 @@ export async function generateEvents(uri: Uri): Promise<[{}[], IMockEventGenerat
 
     const events: Promise<{}>[] = [];
     let count: number = 0;
-    while (count < eventGenerator.numberOfEvents) {
+    // tslint:disable-next-line:strict-boolean-expressions
+    const numberOfEvents: number = eventGenerator.numberOfEvents || 1;
+    while (count < numberOfEvents) {
         // tslint:disable-next-line:no-unsafe-any
-        events.push(jsf.resolve(eventGenerator.eventSchema));
+        events.push(jsf.resolve(eventGenerator.schema));
         count += 1;
     }
 

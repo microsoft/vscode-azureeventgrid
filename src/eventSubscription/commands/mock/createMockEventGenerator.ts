@@ -5,10 +5,12 @@
 
 import * as fse from 'fs-extra';
 import * as path from 'path';
-import { IAzureNode } from 'vscode-azureextensionui';
+import { IActionContext, IAzureNode, IAzureQuickPickItem } from 'vscode-azureextensionui';
 import { ext } from '../../../extensionVariables';
 import { fsUtils } from '../../../utils/fsUtils';
 import { localize } from '../../../utils/localize';
+import { EndpointUrlStep } from '../../createWizard/EndpointUrlStep';
+import { IEndpointUrlWizardContext } from '../../createWizard/IEndpointUrlWizardContext';
 import { EventSubscriptionTreeItem } from '../../tree/EventSubscriptionTreeItem';
 import { IEventSchema } from './IEventSchema';
 import { IMockEventGenerator } from './IMockEventGenerator';
@@ -22,42 +24,61 @@ export enum EventType {
     Custom = 'Fabrikam'
 }
 
-export async function createMockEventGenerator(node?: IAzureNode<EventSubscriptionTreeItem>): Promise<void> {
-    if (!node) {
-        node = <IAzureNode<EventSubscriptionTreeItem>>await ext.eventSubscriptionTree.showNodePicker(EventSubscriptionTreeItem.contextValue);
+export async function createMockEventGenerator(actionContext: IActionContext, node?: IAzureNode<EventSubscriptionTreeItem>): Promise<void> {
+    let eventType: string;
+    let topic: string;
+    let destination: {};
+    let fileName: string;
+    if (node) {
+        eventType = getEventTypeFromTopic(node.treeItem.topic);
+        topic = node.treeItem.topic;
+        destination = {
+            eventSubscriptionId: node.id
+        };
+        fileName = node.treeItem.label;
+    } else {
+        eventType = await promptForEventType();
+        topic = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testgroup/providers/Microsoft.Provider/namespaces/testresource';
+        const urlContext: IEndpointUrlWizardContext = {};
+        const urlStep: EndpointUrlStep<IEndpointUrlWizardContext> = new EndpointUrlStep();
+        await urlStep.prompt(urlContext, ext.ui);
+        destination = {
+            endpointUrl: urlContext.endpointUrl
+        };
+        fileName = 'test';
     }
 
-    const eventType: string = getEventTypeFromTopic(node.treeItem.topic);
+    actionContext.properties.eventType = eventType;
 
-    let fileName: string | undefined;
+    let schemaFileName: string | undefined;
     let eventSubTypePattern: string;
     let subjectPattern: string;
     switch (eventType) {
         case EventType.Storage:
-            fileName = 'Storage';
+            schemaFileName = 'Storage';
             eventSubTypePattern = 'Blob(Created|Deleted)';
             subjectPattern = '/blobServices/default/containers/[a-zA-Z0-9]+/blobs/[a-zA-Z0-9]+';
             break;
         case EventType.Resources:
-            fileName = 'Resource';
+            schemaFileName = 'Resource';
             eventSubTypePattern = 'Resource(Write|Delete)(Success|Failure|Cancel)';
             subjectPattern = '/subscriptions\/[a-zA-Z0-9]+\/resourceGroups\/[a-zA-Z0-9]+\/providers\/Microsoft\\.[a-zA-Z0-9]+\/[a-zA-Z0-9]+';
             break;
         case EventType.ContainerRegistry:
-            fileName = 'ContainerRegistry';
+            schemaFileName = 'ContainerRegistry';
             eventSubTypePattern = 'Image(Pushed|Deleted)';
             subjectPattern = '[a-zA-Z0-9]+:[0-9]\\.[0-9]\\.[0-9]';
             break;
         case EventType.Devices:
-            fileName = 'IotHub';
+            schemaFileName = 'IotHub';
             eventSubTypePattern = 'Device(Created|Deleted)';
             subjectPattern = 'devices/[a-zA-Z0-9]+';
             break;
         case EventType.EventHub:
-            fileName = 'EventHub';
+            schemaFileName = 'EventHub';
             eventSubTypePattern = 'CaptureFileCreated';
             // Get the event hub name from the topic id and use that as the subject
-            subjectPattern = node.treeItem.topic.substring(node.treeItem.topic.lastIndexOf('/') + 1);
+            subjectPattern = topic.substring(topic.lastIndexOf('/') + 1);
             break;
         case EventType.Custom:
             eventSubTypePattern = '[a-zA-Z0-9]+';
@@ -69,30 +90,30 @@ export async function createMockEventGenerator(node?: IAzureNode<EventSubscripti
 
     const templatesPath: string = ext.context.asAbsolutePath(path.join('resources', 'templates'));
     const eventSchema: IEventSchema = <IEventSchema>await fse.readJson(path.join(templatesPath, 'Event.json'));
-    if (fileName) {
-        eventSchema.properties.data = <{}>await fse.readJson(path.join(templatesPath, `${fileName}.json`));
+    if (schemaFileName) {
+        eventSchema.properties.data = <{}>await fse.readJson(path.join(templatesPath, `${schemaFileName}.json`));
     }
 
-    eventSchema.properties.topic.default = node.treeItem.topic;
+    eventSchema.properties.topic.default = topic;
     eventSchema.properties.eventType.pattern = `${eventType.replace('.', '\\.')}\\.${eventSubTypePattern}`;
     eventSchema.properties.subject.pattern = subjectPattern;
 
-    const definitionsPath: string = path.join(templatesPath, 'definitions', `${fileName}.json`);
+    const definitionsPath: string = path.join(templatesPath, 'definitions', `${schemaFileName}.json`);
     if (await fse.pathExists(definitionsPath)) {
         eventSchema.definitions = <{}>await fse.readJson(definitionsPath);
     }
 
     const eventGenerator: IMockEventGenerator = {
-        eventSubscriptionId: node.id,
+        destination: destination,
         numberOfEvents: 1,
         jsonSchemaFakerOptions: {
             useDefaultValue: true,
             alwaysFakeOptionals: true
         },
-        eventSchema: eventSchema
+        schema: eventSchema
     };
 
-    await fsUtils.showNewFile(JSON.stringify(eventGenerator, undefined, 2), node.treeItem.label, '.eventGenerator.json');
+    await fsUtils.showNewFile(JSON.stringify(eventGenerator, undefined, 2), fileName, '.eventGenerator.json');
 }
 
 export function getEventTypeFromTopic(topic: string): EventType {
@@ -118,4 +139,16 @@ export function getEventTypeFromTopic(topic: string): EventType {
 
         throw new Error(localize('unsupportedType', 'The topic type for this Event Subscription is not yet supported.'));
     }
+}
+
+export async function promptForEventType(): Promise<EventType> {
+    const picks: IAzureQuickPickItem<EventType>[] = Object.keys(EventType).map((key: string) => {
+        return {
+            label: key,
+            description: EventType[key],
+            data: EventType[key]
+        };
+    });
+
+    return (await ext.ui.showQuickPick(picks, { placeHolder: localize('selectEventType', 'Select an event type') })).data;
 }

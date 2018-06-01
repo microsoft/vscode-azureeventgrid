@@ -5,10 +5,10 @@
 
 import { AzureWizardPromptStep, IAzureUserInput } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
-import { IEventSubscriptionWizardContext } from "./IEventSubscriptionWizardContext";
+import { IEndpointUrlWizardContext } from './IEndpointUrlWizardContext';
 
-export class EndpointUrlStep extends AzureWizardPromptStep<IEventSubscriptionWizardContext> {
-    public async prompt(wizardContext: IEventSubscriptionWizardContext, ui: IAzureUserInput): Promise<IEventSubscriptionWizardContext> {
+export class EndpointUrlStep<T extends IEndpointUrlWizardContext> extends AzureWizardPromptStep<T> {
+    public async prompt(wizardContext: T, ui: IAzureUserInput): Promise<T> {
         if (!wizardContext.endpointUrl) {
             wizardContext.endpointUrl = (await ui.showInputBox({
                 placeHolder: localize('urlPlaceholder', 'Subscriber Endpoint'),

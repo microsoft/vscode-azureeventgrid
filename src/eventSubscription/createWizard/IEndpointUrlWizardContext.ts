@@ -3,17 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { IEventSchema } from "./IEventSchema";
-
-export interface IMockEventGenerator {
-    destination?: {
-        eventSubscriptionId?: string;
-        endpointUrl?: string;
-    };
-    numberOfEvents?: number;
-    jsonSchemaFakerOptions?: {
-        alwaysFakeOptionals?: boolean,
-        useDefaultValue?: boolean
-    };
-    schema?: IEventSchema;
+export interface IEndpointUrlWizardContext {
+    endpointUrl?: string;
 }
