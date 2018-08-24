@@ -6,7 +6,7 @@
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic, TopicsListResult } from 'azure-arm-eventgrid/lib/models';
 import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
-import { ext } from '../../extensionVariables';
+import { azureUtils } from '../../utils/azureUtils';
 import { localize } from '../../utils/localize';
 import { ITopicWizardContext } from '../createWizard/ITopicWizardContext';
 import { TopicCreateStep } from '../createWizard/TopicCreateStep';
@@ -21,7 +21,7 @@ export class TopicProvider implements IChildProvider {
     }
 
     public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
+        const client: EventGridManagementClient = azureUtils.getEventGridManagementClient(node);
         const topics: TopicsListResult = await client.topics.listBySubscription();
         return topics.map((topic: Topic) => new TopicTreeItem(topic));
     }
@@ -30,7 +30,8 @@ export class TopicProvider implements IChildProvider {
         const wizardContext: ITopicWizardContext = {
             credentials: node.credentials,
             subscriptionId: node.subscriptionId,
-            subscriptionDisplayName: node.subscriptionDisplayName
+            subscriptionDisplayName: node.subscriptionDisplayName,
+            environment: node.environment
         };
 
         const wizard: AzureWizard<ITopicWizardContext> = new AzureWizard(
@@ -49,10 +50,10 @@ export class TopicProvider implements IChildProvider {
         // tslint:disable-next-line:strict-boolean-expressions
         actionContext = actionContext || <IActionContext>{ properties: {}, measurements: {} };
 
-        await wizard.prompt(actionContext, ext.ui);
+        await wizard.prompt(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
         showCreatingNode(wizardContext.newTopicName!);
-        await wizard.execute(actionContext, ext.outputChannel);
+        await wizard.execute(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
         return new TopicTreeItem(wizardContext.topic!);
     }

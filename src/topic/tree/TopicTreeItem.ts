@@ -40,11 +40,11 @@ export class TopicTreeItem implements IAzureTreeItem {
 
     public async deleteTreeItem(node: IAzureNode<TopicTreeItem>): Promise<void> {
         const message: string = localize('confirmDelete', 'Are you sure you want to delete topic "{0}"?', this._name);
-        await node.ui.showWarningMessage(message, { modal: true }, DialogResponses.deleteResponse, DialogResponses.cancel);
+        await ext.ui.showWarningMessage(message, { modal: true }, DialogResponses.deleteResponse, DialogResponses.cancel);
 
         ext.outputChannel.show(true);
         ext.outputChannel.appendLine(localize('deleting', 'Deleting topic "{0}"...', this._name));
-        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
+        const client: EventGridManagementClient = azureUtils.getEventGridManagementClient(node);
         await client.topics.deleteMethod(this._resourceGroup, this._name);
         ext.outputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted topic "{0}".', this._name));
     }

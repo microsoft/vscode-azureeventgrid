@@ -3,15 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureNameStep, IAzureUserInput, ResourceGroupListStep, resourceGroupNamingRules } from 'vscode-azureextensionui';
+import { AzureNameStep, ResourceGroupListStep, resourceGroupNamingRules } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 import { IEventSubscriptionWizardContext } from "./IEventSubscriptionWizardContext";
 
 export class EventSubscriptionNameStep extends AzureNameStep<IEventSubscriptionWizardContext> {
-    public async prompt(wizardContext: IEventSubscriptionWizardContext, ui: IAzureUserInput): Promise<IEventSubscriptionWizardContext> {
+    public async prompt(wizardContext: IEventSubscriptionWizardContext): Promise<IEventSubscriptionWizardContext> {
         if (!wizardContext.newEventSubscriptionName) {
             const suggestedName: string | undefined = wizardContext.relatedNameTask ? await wizardContext.relatedNameTask : undefined;
-            wizardContext.newEventSubscriptionName = (await ui.showInputBox({
+            wizardContext.newEventSubscriptionName = (await ext.ui.showInputBox({
                 value: suggestedName,
                 placeHolder: localize('namePlaceholder', 'Event subscription name'),
                 prompt: localize('namePrompt', 'Provide an event subscription name.'),

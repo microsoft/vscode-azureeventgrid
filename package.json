@@ -378,15 +378,15 @@
     },
     "dependencies": {
         "azure-arm-containerregistry": "^2.2.0",
-        "azure-arm-eventgrid": "^1.2.0",
+        "azure-arm-eventgrid": "^1.4.0",
         "azure-arm-eventhub": "^1.3.0",
-        "azure-arm-iothub": "^1.1.0-preview",
+        "azure-arm-iothub": "^2.0.1",
         "azure-arm-resource": "^3.1.1-preview",
         "chance": "^1.0.16",
         "fs-extra": "^5.0.0",
         "json-schema-faker": "~0.5.0-rc15",
         "request-promise": "^4.2.2",
-        "vscode-azureextensionui": "~0.13.1",
+        "vscode-azureextensionui": "^0.17.0",
         "vscode-extension-telemetry": "^0.0.15",
         "vscode-nls": "^2.0.2"
     },
