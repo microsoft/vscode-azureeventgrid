@@ -5,7 +5,7 @@
 
 import { EventHubManagementClient } from 'azure-arm-eventhub';
 import { EHNamespace, Eventhub } from 'azure-arm-eventhub/lib/models';
-import { addExtensionUserAgent, AzureWizardPromptStep, IAzureQuickPickItem, IAzureQuickPickOptions, ISubscriptionWizardContext } from 'vscode-azureextensionui';
+import { AzureWizardPromptStep, createAzureClient, IAzureQuickPickItem, IAzureQuickPickOptions, ISubscriptionWizardContext } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 
@@ -24,8 +24,7 @@ export class EventHubsNamespaceListStep<T extends IEventHubsNamespaceWizardConte
     }
 
     private async getQuickPicks(wizardContext: T): Promise<IAzureQuickPickItem<Eventhub>[]> {
-        const client: EventHubManagementClient = new EventHubManagementClient(wizardContext.credentials, wizardContext.subscriptionId, wizardContext.environment.resourceManagerEndpointUrl);
-        addExtensionUserAgent(client);
+        const client: EventHubManagementClient = createAzureClient(wizardContext, EventHubManagementClient);
         const namespaces: EHNamespace[] = await client.namespaces.list();
         return namespaces.map((n: EHNamespace) => {
             return {

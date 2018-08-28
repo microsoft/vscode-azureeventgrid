@@ -5,7 +5,7 @@
 
 import { IotHubClient } from 'azure-arm-iothub';
 import { IotHubDescription } from 'azure-arm-iothub/lib/models';
-import { addExtensionUserAgent, AzureWizardPromptStep, IAzureQuickPickItem, IAzureQuickPickOptions, ISubscriptionWizardContext } from 'vscode-azureextensionui';
+import { AzureWizardPromptStep, createAzureClient, IAzureQuickPickItem, IAzureQuickPickOptions, ISubscriptionWizardContext } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 
@@ -24,8 +24,7 @@ export class IoTHubListStep<T extends IIoTHubWizardContext> extends AzureWizardP
     }
 
     private async getQuickPicks(wizardContext: T): Promise<IAzureQuickPickItem<IotHubDescription>[]> {
-        const client: IotHubClient = new IotHubClient(wizardContext.credentials, wizardContext.subscriptionId, wizardContext.environment.resourceManagerEndpointUrl);
-        addExtensionUserAgent(client);
+        const client: IotHubClient = createAzureClient(wizardContext, IotHubClient);
         const hubs: IotHubDescription[] = await client.iotHubResource.listBySubscription();
         return hubs.map((h: IotHubDescription) => {
             return {

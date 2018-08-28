@@ -5,7 +5,7 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic } from 'azure-arm-eventgrid/lib/models';
-import { DialogResponses, IAzureNode, IAzureTreeItem } from 'vscode-azureextensionui';
+import { createAzureClient, DialogResponses, IAzureNode, IAzureTreeItem } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { azureUtils } from '../../utils/azureUtils';
 import { ArgumentError } from '../../utils/errors';
@@ -44,7 +44,7 @@ export class TopicTreeItem implements IAzureTreeItem {
 
         ext.outputChannel.show(true);
         ext.outputChannel.appendLine(localize('deleting', 'Deleting topic "{0}"...', this._name));
-        const client: EventGridManagementClient = azureUtils.getEventGridManagementClient(node);
+        const client: EventGridManagementClient = createAzureClient(node, EventGridManagementClient);
         await client.topics.deleteMethod(this._resourceGroup, this._name);
         ext.outputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted topic "{0}".', this._name));
     }

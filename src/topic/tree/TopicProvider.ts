@@ -5,8 +5,7 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic, TopicsListResult } from 'azure-arm-eventgrid/lib/models';
-import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
-import { azureUtils } from '../../utils/azureUtils';
+import { AzureWizard, createAzureClient, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
 import { ITopicWizardContext } from '../createWizard/ITopicWizardContext';
 import { TopicCreateStep } from '../createWizard/TopicCreateStep';
@@ -21,7 +20,7 @@ export class TopicProvider implements IChildProvider {
     }
 
     public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = azureUtils.getEventGridManagementClient(node);
+        const client: EventGridManagementClient = createAzureClient(node, EventGridManagementClient);
         const topics: TopicsListResult = await client.topics.listBySubscription();
         return topics.map((topic: Topic) => new TopicTreeItem(topic));
     }
