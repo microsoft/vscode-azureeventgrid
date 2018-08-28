@@ -1,6 +1,6 @@
 # Azure Event Grid for Visual Studio Code (Preview)
 
-[![Build Status](https://travis-ci.org/Microsoft/vscode-azureeventgrid.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-azureeventgrid) [![Release Status](https://img.shields.io/github/tag/Microsoft/vscode-azureeventgrid.svg?label=prerelease&colorB=0E7FC0)](https://github.com/Microsoft/vscode-azureeventgrid/releases)
+[![Version](https://vsmarketplacebadge.apphb.com/version/ms-azuretools.vscode-azureeventgrid.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureeventgrid) [![Installs](https://vsmarketplacebadge.apphb.com/installs-short/ms-azuretools.vscode-azureeventgrid.svg)](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureeventgrid) [![Build Status](https://travis-ci.org/Microsoft/vscode-azureeventgrid.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-azureeventgrid)
 
 ## Features
 
