@@ -5,19 +5,19 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic } from 'azure-arm-eventgrid/lib/models';
-import { AzureWizard, AzureWizardPromptStep, IAzureQuickPickItem, IAzureQuickPickOptions, IAzureUserInput, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
+import { AzureWizard, AzureWizardPromptStep, createAzureClient, IAzureQuickPickItem, IAzureQuickPickOptions, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { ITopicWizardContext } from '../../topic/createWizard/ITopicWizardContext';
 import { TopicCreateStep } from '../../topic/createWizard/TopicCreateStep';
 import { TopicNameStep } from '../../topic/createWizard/TopicNameStep';
 import { localize } from '../../utils/localize';
 
 export class TopicListStep<T extends ITopicWizardContext> extends AzureWizardPromptStep<T> {
-    public async prompt(wizardContext: T, ui: IAzureUserInput): Promise<T> {
+    public async prompt(wizardContext: T): Promise<T> {
         if (!wizardContext.topic) {
-            const client: EventGridManagementClient = new EventGridManagementClient(wizardContext.credentials, wizardContext.subscriptionId);
-
+            const client: EventGridManagementClient = createAzureClient(wizardContext, EventGridManagementClient);
             const quickPickOptions: IAzureQuickPickOptions = { placeHolder: localize('topicPlaceHolder', 'Select a topic'), id: `TopicListStep/${wizardContext.subscriptionId}` };
-            wizardContext.topic = (await ui.showQuickPick(this.getQuickPicks(client.topics.listBySubscription()), quickPickOptions)).data;
+            wizardContext.topic = (await ext.ui.showQuickPick(this.getQuickPicks(client.topics.listBySubscription()), quickPickOptions)).data;
 
             if (!wizardContext.topic) {
                 this.subWizard = new AzureWizard(

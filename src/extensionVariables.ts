@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { ExtensionContext, OutputChannel } from "vscode";
-import { AzureActionHandler, AzureTreeDataProvider, IAzureUserInput } from "vscode-azureextensionui";
+import { AzureTreeDataProvider, IAzureUserInput } from "vscode-azureextensionui";
 import TelemetryReporter from "vscode-extension-telemetry";
 
 /**
@@ -14,7 +14,6 @@ export namespace ext {
     export let outputChannel: OutputChannel;
     export let ui: IAzureUserInput;
     export let reporter: TelemetryReporter | undefined;
-    export let actionHandler: AzureActionHandler;
     export let context: ExtensionContext;
     export let topicTree: AzureTreeDataProvider;
     export let eventSubscriptionTree: AzureTreeDataProvider;

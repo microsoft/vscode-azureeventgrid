@@ -3,15 +3,16 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureNameStep, IAzureUserInput, ResourceGroupListStep, resourceGroupNamingRules } from 'vscode-azureextensionui';
+import { AzureNameStep, ResourceGroupListStep, resourceGroupNamingRules } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 import { ITopicWizardContext } from './ITopicWizardContext';
 
 export class TopicNameStep<T extends ITopicWizardContext> extends AzureNameStep<T> {
-    public async prompt(wizardContext: T, ui: IAzureUserInput): Promise<T> {
+    public async prompt(wizardContext: T): Promise<T> {
         if (!wizardContext.newTopicName) {
             const suggestedName: string | undefined = wizardContext.relatedNameTask ? await wizardContext.relatedNameTask : undefined;
-            wizardContext.newTopicName = (await ui.showInputBox({
+            wizardContext.newTopicName = (await ext.ui.showInputBox({
                 value: suggestedName,
                 placeHolder: localize('namePlaceholder', 'Topic name'),
                 prompt: localize('namePrompt', 'Provide a topic name.'),

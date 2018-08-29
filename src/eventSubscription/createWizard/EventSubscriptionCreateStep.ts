@@ -5,8 +5,8 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { WebHookEventSubscriptionDestination } from 'azure-arm-eventgrid/lib/models';
-import { OutputChannel } from 'vscode';
-import { AzureWizardExecuteStep, IResourceGroupWizardContext, IStorageAccountWizardContext } from 'vscode-azureextensionui';
+import { AzureWizardExecuteStep, createAzureClient, IResourceGroupWizardContext, IStorageAccountWizardContext } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { ITopicWizardContext } from '../../topic/createWizard/ITopicWizardContext';
 import { localize } from '../../utils/localize';
 import { IContainerRegistryWizardContext } from './ContainerRegistryListStep';
@@ -16,7 +16,7 @@ import { IIoTHubWizardContext } from './IoTHubListStep';
 import { TopicType } from './TopicTypeStep';
 
 export class EventSubscriptionCreateStep extends AzureWizardExecuteStep<IEventSubscriptionWizardContext> {
-    public async execute(wizardContext: IEventSubscriptionWizardContext, outputChannel: OutputChannel): Promise<IEventSubscriptionWizardContext> {
+    public async execute(wizardContext: IEventSubscriptionWizardContext): Promise<IEventSubscriptionWizardContext> {
         if (!wizardContext.eventSubscription) {
             let topicId: string;
             switch (wizardContext.topicType) {
@@ -51,9 +51,9 @@ export class EventSubscriptionCreateStep extends AzureWizardExecuteStep<IEventSu
                     throw new Error(localize('unrecognizedTopicType', 'Unrecognized topic type "{0}".', wizardContext.topicType));
             }
 
-            outputChannel.appendLine(localize('creating', 'Creating event subscription "{0}" for topic "{1}"...', wizardContext.newEventSubscriptionName, topicId));
+            ext.outputChannel.appendLine(localize('creating', 'Creating event subscription "{0}" for topic "{1}"...', wizardContext.newEventSubscriptionName, topicId));
 
-            const client: EventGridManagementClient = new EventGridManagementClient(wizardContext.credentials, wizardContext.subscriptionId);
+            const client: EventGridManagementClient = createAzureClient(wizardContext, EventGridManagementClient);
             // tslint:disable-next-line:no-non-null-assertion
             wizardContext.eventSubscription = await client.eventSubscriptions.createOrUpdate(topicId, wizardContext.newEventSubscriptionName!, {
                 destination: <WebHookEventSubscriptionDestination>{
@@ -62,7 +62,7 @@ export class EventSubscriptionCreateStep extends AzureWizardExecuteStep<IEventSu
                 }
             });
 
-            outputChannel.appendLine(localize('created', 'Successfully created event subscription "{0}".', wizardContext.newEventSubscriptionName));
+            ext.outputChannel.appendLine(localize('created', 'Successfully created event subscription "{0}".', wizardContext.newEventSubscriptionName));
         }
 
         return wizardContext;

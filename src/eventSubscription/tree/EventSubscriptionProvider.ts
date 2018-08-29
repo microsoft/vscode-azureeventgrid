@@ -7,8 +7,7 @@ import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { EventSubscription } from 'azure-arm-eventgrid/lib/models';
 import { SubscriptionClient } from 'azure-arm-resource';
 import { Location } from 'azure-arm-resource/lib/subscription/models';
-import { AzureWizard, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, parseError } from 'vscode-azureextensionui';
-import { ext } from '../../extensionVariables';
+import { AzureWizard, createAzureClient, createAzureSubscriptionClient, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, parseError } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
 import { EndpointUrlStep } from '../createWizard/EndpointUrlStep';
 import { EventSubscriptionCreateStep } from '../createWizard/EventSubscriptionCreateStep';
@@ -25,7 +24,7 @@ export class EventSubscriptionProvider implements IChildProvider {
     }
 
     public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = new EventGridManagementClient(node.credentials, node.subscriptionId);
+        const client: EventGridManagementClient = createAzureClient(node, EventGridManagementClient);
 
         // There is no "listAll" method - we have to list individually by location
         const listByLocationTasks: Promise<EventSubscription[]>[] = (await listLocations(node)).map(async (location: Location) => {
@@ -49,7 +48,8 @@ export class EventSubscriptionProvider implements IChildProvider {
         const wizardContext: IEventSubscriptionWizardContext = {
             credentials: node.credentials,
             subscriptionId: node.subscriptionId,
-            subscriptionDisplayName: node.subscriptionDisplayName
+            subscriptionDisplayName: node.subscriptionDisplayName,
+            environment: node.environment
         };
 
         const wizard: AzureWizard<IEventSubscriptionWizardContext> = new AzureWizard(
@@ -68,16 +68,16 @@ export class EventSubscriptionProvider implements IChildProvider {
         // tslint:disable-next-line:strict-boolean-expressions
         actionContext = actionContext || <IActionContext>{ properties: {}, measurements: {} };
 
-        await wizard.prompt(actionContext, ext.ui);
+        await wizard.prompt(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
         showCreatingNode(wizardContext.newEventSubscriptionName!);
-        await wizard.execute(actionContext, ext.outputChannel);
+        await wizard.execute(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
         return new EventSubscriptionTreeItem(wizardContext.eventSubscription!);
     }
 }
 
 async function listLocations(node: IAzureNode): Promise<Location[]> {
-    const client: SubscriptionClient = new SubscriptionClient(node.credentials);
+    const client: SubscriptionClient = createAzureSubscriptionClient(node, SubscriptionClient);
     return await client.subscriptions.listLocations(node.subscriptionId);
 }

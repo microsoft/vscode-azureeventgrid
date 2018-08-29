@@ -3,14 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizardPromptStep, IAzureUserInput } from 'vscode-azureextensionui';
+import { AzureWizardPromptStep } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 import { IEndpointUrlWizardContext } from './IEndpointUrlWizardContext';
 
 export class EndpointUrlStep<T extends IEndpointUrlWizardContext> extends AzureWizardPromptStep<T> {
-    public async prompt(wizardContext: T, ui: IAzureUserInput): Promise<T> {
+    public async prompt(wizardContext: T): Promise<T> {
         if (!wizardContext.endpointUrl) {
-            wizardContext.endpointUrl = (await ui.showInputBox({
+            wizardContext.endpointUrl = (await ext.ui.showInputBox({
                 placeHolder: localize('urlPlaceholder', 'Subscriber Endpoint'),
                 prompt: localize('urlPrompt', 'Provide a subscriber endpoint.'),
                 validateInput: this.validateInput

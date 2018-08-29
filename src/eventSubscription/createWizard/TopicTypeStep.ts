@@ -3,7 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizard, AzureWizardPromptStep, IAzureQuickPickItem, IAzureUserInput, ResourceGroupListStep, StorageAccountKind, StorageAccountListStep, StorageAccountPerformance, StorageAccountReplication } from 'vscode-azureextensionui';
+import { AzureWizard, AzureWizardPromptStep, IAzureQuickPickItem, ResourceGroupListStep, StorageAccountKind, StorageAccountListStep, StorageAccountPerformance, StorageAccountReplication } from 'vscode-azureextensionui';
+import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
 import { ContainerRegistryListStep } from './ContainerRegistryListStep';
 import { EventHubsNamespaceListStep } from './EventHubsNamespaceListStep';
@@ -22,7 +23,7 @@ export enum TopicType {
 }
 
 export class TopicTypeStep extends AzureWizardPromptStep<IEventSubscriptionWizardContext> {
-    public async prompt(wizardContext: IEventSubscriptionWizardContext, ui: IAzureUserInput): Promise<IEventSubscriptionWizardContext> {
+    public async prompt(wizardContext: IEventSubscriptionWizardContext): Promise<IEventSubscriptionWizardContext> {
         if (wizardContext.topicType === undefined) {
             const picks: IAzureQuickPickItem<TopicType>[] = Object.keys(TopicType).map((key: string) => {
                 return {
@@ -32,7 +33,7 @@ export class TopicTypeStep extends AzureWizardPromptStep<IEventSubscriptionWizar
                 };
             });
 
-            wizardContext.topicType = (await ui.showQuickPick(picks, { placeHolder: localize('selectType', 'Select a topic type') })).data;
+            wizardContext.topicType = (await ext.ui.showQuickPick(picks, { placeHolder: localize('selectType', 'Select a topic type') })).data;
 
             switch (wizardContext.topicType) {
                 case TopicType.StorageAccount:

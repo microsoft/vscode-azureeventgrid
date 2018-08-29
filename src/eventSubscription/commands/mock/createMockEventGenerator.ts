@@ -41,7 +41,7 @@ export async function createMockEventGenerator(actionContext: IActionContext, no
         topic = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testgroup/providers/Microsoft.Provider/namespaces/testresource';
         const urlContext: IEndpointUrlWizardContext = {};
         const urlStep: EndpointUrlStep<IEndpointUrlWizardContext> = new EndpointUrlStep();
-        await urlStep.prompt(urlContext, ext.ui);
+        await urlStep.prompt(urlContext);
         destination = {
             endpointUrl: urlContext.endpointUrl
         };

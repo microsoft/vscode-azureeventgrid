@@ -6,13 +6,14 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import { AzureActionHandler, AzureUserInput, callWithTelemetryAndErrorHandling, IActionContext } from 'vscode-azureextensionui';
+import { AzureUserInput, callWithTelemetryAndErrorHandling, IActionContext, registerCommand, registerUIExtensionVariables } from 'vscode-azureextensionui';
 import TelemetryReporter from 'vscode-extension-telemetry';
 import { registerEventSubscriptionCommands } from './eventSubscription/registerEventSubscriptionCommands';
 import { ext } from './extensionVariables';
 import { registerTopicCommands } from './topic/registerTopicCommands';
 
 export function activate(context: vscode.ExtensionContext): void {
+    registerUIExtensionVariables(ext);
     ext.context = context;
 
     try {
@@ -27,15 +28,14 @@ export function activate(context: vscode.ExtensionContext): void {
     context.subscriptions.push(ext.outputChannel);
 
     // tslint:disable-next-line:no-floating-promises
-    callWithTelemetryAndErrorHandling('azureEventGrid.activate', ext.reporter, ext.outputChannel, async function (this: IActionContext): Promise<void> {
+    callWithTelemetryAndErrorHandling('azureEventGrid.activate', async function (this: IActionContext): Promise<void> {
         this.properties.isActivationEvent = 'true';
         ext.ui = new AzureUserInput(context.globalState);
-        ext.actionHandler = new AzureActionHandler(context, ext.outputChannel, ext.reporter);
 
         registerTopicCommands();
         registerEventSubscriptionCommands();
 
-        ext.actionHandler.registerCommand('azureEventGrid.selectSubscriptions', async () => await vscode.commands.executeCommand('azure-account.selectSubscriptions'));
+        registerCommand('azureEventGrid.selectSubscriptions', async () => await vscode.commands.executeCommand('azure-account.selectSubscriptions'));
     });
 }
 
