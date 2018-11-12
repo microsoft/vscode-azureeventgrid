@@ -28,7 +28,9 @@ Once you have an event generator, you can customize the schema, select "Preview 
 
 ## Managing Azure Subscriptions
 
-If you are not signed in to Azure, you will see a "Sign in to Azure..." link. Alternatively, you can select "View->Command Palette" in the VS Code menu, and search for "Azure: Sign In".
+The [Azure Account extension](https://github.com/Microsoft/vscode-azure-account) is used to manage authentication. It is installed automatically with this extension. If you want to sign in to specific tenant set the azure.tenant setting in the [Azure Account extension](https://github.com/Microsoft/vscode-azure-account).
+
+If you are not signed in to Azure, you will see a "Sign in to Azure..." link. Alternatively, you can select "View->Command Palette" in the VS Code menu, and search for "Azure: Sign In". 
 
 ![Sign in to Azure](resources/SignIn.gif)
 
