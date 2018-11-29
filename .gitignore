@@ -57,8 +57,6 @@ typings/
 # dotenv environment variables file
 .env
 
-package-lock.json
-
 # Output
 out
 *.vsix
