@@ -5,33 +5,28 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic, TopicsListResult } from 'azure-arm-eventgrid/lib/models';
-import { AzureWizard, createAzureClient, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, LocationListStep, ResourceGroupListStep } from 'vscode-azureextensionui';
+import { AzureWizard, createAzureClient, IActionContext, LocationListStep, ResourceGroupListStep, SubscriptionTreeItem } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
 import { ITopicWizardContext } from '../createWizard/ITopicWizardContext';
 import { TopicCreateStep } from '../createWizard/TopicCreateStep';
 import { TopicNameStep } from '../createWizard/TopicNameStep';
 import { TopicTreeItem } from './TopicTreeItem';
 
-export class TopicProvider implements IChildProvider {
+export class TopicProvider extends SubscriptionTreeItem {
     public readonly childTypeLabel: string = localize('topic', 'Topic');
 
-    public hasMoreChildren(): boolean {
+    public hasMoreChildrenImpl(): boolean {
         return false;
     }
 
-    public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = createAzureClient(node, EventGridManagementClient);
+    public async loadMoreChildrenImpl(_clearCache: boolean): Promise<TopicTreeItem[]> {
+        const client: EventGridManagementClient = createAzureClient(this.root, EventGridManagementClient);
         const topics: TopicsListResult = await client.topics.listBySubscription();
-        return topics.map((topic: Topic) => new TopicTreeItem(topic));
+        return topics.map((topic: Topic) => new TopicTreeItem(this, topic));
     }
 
-    public async createChild(node: IAzureNode, showCreatingNode: (label: string) => void, actionContext?: IActionContext): Promise<IAzureTreeItem> {
-        const wizardContext: ITopicWizardContext = {
-            credentials: node.credentials,
-            subscriptionId: node.subscriptionId,
-            subscriptionDisplayName: node.subscriptionDisplayName,
-            environment: node.environment
-        };
+    public async createChildImpl(showCreatingNode: (label: string) => void, actionContext?: IActionContext): Promise<TopicTreeItem> {
+        const wizardContext: ITopicWizardContext = Object.assign({}, this.root);
 
         const wizard: AzureWizard<ITopicWizardContext> = new AzureWizard(
             [
@@ -54,6 +49,6 @@ export class TopicProvider implements IChildProvider {
         showCreatingNode(wizardContext.newTopicName!);
         await wizard.execute(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
-        return new TopicTreeItem(wizardContext.topic!);
+        return new TopicTreeItem(this, wizardContext.topic!);
     }
 }

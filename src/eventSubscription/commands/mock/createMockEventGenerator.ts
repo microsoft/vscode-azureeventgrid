@@ -5,7 +5,7 @@
 
 import * as fse from 'fs-extra';
 import * as path from 'path';
-import { IActionContext, IAzureNode, IAzureQuickPickItem } from 'vscode-azureextensionui';
+import { IActionContext, IAzureQuickPickItem } from 'vscode-azureextensionui';
 import { ext } from '../../../extensionVariables';
 import { fsUtils } from '../../../utils/fsUtils';
 import { localize } from '../../../utils/localize';
@@ -24,18 +24,18 @@ export enum EventType {
     Custom = 'Fabrikam'
 }
 
-export async function createMockEventGenerator(actionContext: IActionContext, node?: IAzureNode<EventSubscriptionTreeItem>): Promise<void> {
+export async function createMockEventGenerator(actionContext: IActionContext, node?: EventSubscriptionTreeItem): Promise<void> {
     let eventType: string;
     let topic: string;
     let destination: {};
     let fileName: string;
     if (node) {
-        eventType = getEventTypeFromTopic(node.treeItem.topic);
-        topic = node.treeItem.topic;
+        eventType = getEventTypeFromTopic(node.topic);
+        topic = node.topic;
         destination = {
             eventSubscriptionId: node.id
         };
-        fileName = node.treeItem.label;
+        fileName = node.label;
     } else {
         eventType = await promptForEventType();
         topic = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testgroup/providers/Microsoft.Provider/namespaces/testresource';
