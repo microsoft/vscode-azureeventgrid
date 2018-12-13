@@ -2,6 +2,14 @@
 
 All notable changes to the "azureeventgrid" extension will be documented in this file.
 
+## 0.1.1 - 2018-12-14
+
+### Added
+
+- Provisional support for sovereign accounts in Azure
+- Use notifications instead of opening output channel
+- Improved parsing of errors
+
 ## 0.1.0 - 2018-5-31
 
 ### Added
