@@ -5,6 +5,7 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic, TopicsListResult } from 'azure-arm-eventgrid/lib/models';
+import * as vscode from 'vscode';
 import { AzureWizard, createAzureClient, IActionContext, LocationListStep, ResourceGroupListStep, SubscriptionTreeItem } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
 import { ITopicWizardContext } from '../createWizard/ITopicWizardContext';
@@ -47,7 +48,11 @@ export class TopicProvider extends SubscriptionTreeItem {
         await wizard.prompt(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
         showCreatingNode(wizardContext.newTopicName!);
-        await wizard.execute(actionContext);
+        const message: string = localize('creatingTopic', 'Creating topic "{0}"...', wizardContext.newTopicName);
+        await vscode.window.withProgress({ title: message, location: vscode.ProgressLocation.Notification }, async () => {
+            // tslint:disable-next-line:no-non-null-assertion
+            await wizard.execute(actionContext!);
+        });
         // tslint:disable-next-line:no-non-null-assertion
         return new TopicTreeItem(this, wizardContext.topic!);
     }

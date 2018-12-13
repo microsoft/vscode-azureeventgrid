@@ -4,6 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
+import * as vscode from 'vscode';
 import { AzureWizardExecuteStep, createAzureClient } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { localize } from '../../utils/localize';
@@ -16,7 +17,9 @@ export class TopicCreateStep<T extends ITopicWizardContext> extends AzureWizardE
             const client: EventGridManagementClient = createAzureClient(wizardContext, EventGridManagementClient);
             // tslint:disable-next-line:no-non-null-assertion
             wizardContext.topic = await client.topics.createOrUpdate(wizardContext.resourceGroup!.name!, wizardContext.newTopicName!, { location: wizardContext.location!.name! });
-            ext.outputChannel.appendLine(localize('created', 'Successfully created topic "{0}".', wizardContext.newTopicName));
+            const message: string = localize('created', 'Successfully created topic "{0}".', wizardContext.newTopicName);
+            ext.outputChannel.appendLine(message);
+            vscode.window.showInformationMessage(message);
         }
 
         return wizardContext;

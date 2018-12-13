@@ -7,6 +7,7 @@ import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { EventSubscription } from 'azure-arm-eventgrid/lib/models';
 import { SubscriptionClient } from 'azure-arm-resource';
 import { Location } from 'azure-arm-resource/lib/subscription/models';
+import * as vscode from 'vscode';
 import { AzureWizard, createAzureClient, createAzureSubscriptionClient, IActionContext, ISubscriptionRoot, parseError, SubscriptionTreeItem } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
 import { EndpointUrlStep } from '../createWizard/EndpointUrlStep';
@@ -66,7 +67,11 @@ export class EventSubscriptionProvider extends SubscriptionTreeItem {
         await wizard.prompt(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
         showCreatingNode(wizardContext.newEventSubscriptionName!);
-        await wizard.execute(actionContext);
+        const message: string = localize('creatingEventSubscription', 'Creating event subscription "{0}"...', wizardContext.newEventSubscriptionName);
+        await vscode.window.withProgress({ title: message, location: vscode.ProgressLocation.Notification }, async () => {
+            // tslint:disable-next-line:no-non-null-assertion
+            await wizard.execute(actionContext!);
+        });
         // tslint:disable-next-line:no-non-null-assertion
         return new EventSubscriptionTreeItem(this, wizardContext.eventSubscription!);
     }

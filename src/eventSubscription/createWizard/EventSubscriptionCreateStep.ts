@@ -5,6 +5,7 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { WebHookEventSubscriptionDestination } from 'azure-arm-eventgrid/lib/models';
+import * as vscode from 'vscode';
 import { AzureWizardExecuteStep, createAzureClient, IResourceGroupWizardContext, IStorageAccountWizardContext } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { ITopicWizardContext } from '../../topic/createWizard/ITopicWizardContext';
@@ -62,7 +63,9 @@ export class EventSubscriptionCreateStep extends AzureWizardExecuteStep<IEventSu
                 }
             });
 
-            ext.outputChannel.appendLine(localize('created', 'Successfully created event subscription "{0}".', wizardContext.newEventSubscriptionName));
+            const message: string = localize('created', 'Successfully created event subscription "{0}".', wizardContext.newEventSubscriptionName);
+            ext.outputChannel.appendLine(message);
+            vscode.window.showInformationMessage(message);
         }
 
         return wizardContext;

@@ -5,6 +5,7 @@
 
 import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { Topic } from 'azure-arm-eventgrid/lib/models';
+import * as vscode from 'vscode';
 import { AzureTreeItem, createAzureClient, DialogResponses } from 'vscode-azureextensionui';
 import { ext } from '../../extensionVariables';
 import { azureUtils } from '../../utils/azureUtils';
@@ -44,10 +45,10 @@ export class TopicTreeItem extends AzureTreeItem {
         const message: string = localize('confirmDelete', 'Are you sure you want to delete topic "{0}"?', this._name);
         await ext.ui.showWarningMessage(message, { modal: true }, DialogResponses.deleteResponse, DialogResponses.cancel);
 
-        ext.outputChannel.show(true);
-        ext.outputChannel.appendLine(localize('deleting', 'Deleting topic "{0}"...', this._name));
         const client: EventGridManagementClient = createAzureClient(this.root, EventGridManagementClient);
-        await client.topics.deleteMethod(this._resourceGroup, this._name);
-        ext.outputChannel.appendLine(localize('successfullyDeleted', 'Successfully deleted topic "{0}".', this._name));
+        await vscode.window.withProgress({ title: localize('deleting', 'Deleting topic "{0}"...', this._name), location: vscode.ProgressLocation.Notification }, async () => {
+            await client.topics.deleteMethod(this._resourceGroup, this._name);
+        });
+        vscode.window.showInformationMessage(localize('successfullyDeleted', 'Successfully deleted topic "{0}".', this._name));
     }
 }
