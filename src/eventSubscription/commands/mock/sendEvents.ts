@@ -7,7 +7,7 @@ import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { EventSubscriptionFullUrl } from 'azure-arm-eventgrid/lib/models';
 import * as requestP from 'request-promise';
 import { Progress, ProgressLocation, Uri, window } from "vscode";
-import { createAzureClient, IAzureNode } from "vscode-azureextensionui";
+import { createAzureClient } from "vscode-azureextensionui";
 import { ext } from '../../../extensionVariables';
 import { localize } from '../../../utils/localize';
 import { EventSubscriptionTreeItem } from '../../tree/EventSubscriptionTreeItem';
@@ -57,11 +57,10 @@ async function getEndpointUrl(eventGenerator: IMockEventGenerator): Promise<stri
         if (eventGenerator.destination.endpointUrl) {
             return eventGenerator.destination.endpointUrl;
         } else if (eventGenerator.destination.eventSubscriptionId) {
-            const node: IAzureNode | undefined = await ext.eventSubscriptionTree.findNode(eventGenerator.destination.eventSubscriptionId);
+            const node: EventSubscriptionTreeItem | undefined = <EventSubscriptionTreeItem | undefined>await ext.eventSubscriptionTree.findTreeItem(eventGenerator.destination.eventSubscriptionId);
             if (node) {
-                const treeItem: EventSubscriptionTreeItem = <EventSubscriptionTreeItem>node.treeItem;
-                const client: EventGridManagementClient = createAzureClient(node, EventGridManagementClient);
-                const url: EventSubscriptionFullUrl = await client.eventSubscriptions.getFullUrl(treeItem.topic, treeItem.name);
+                const client: EventGridManagementClient = createAzureClient(node.root, EventGridManagementClient);
+                const url: EventSubscriptionFullUrl = await client.eventSubscriptions.getFullUrl(node.topic, node.name);
                 if (url.endpointUrl) {
                     return url.endpointUrl;
                 } else {

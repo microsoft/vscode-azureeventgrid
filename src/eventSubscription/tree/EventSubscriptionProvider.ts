@@ -7,7 +7,7 @@ import { EventGridManagementClient } from 'azure-arm-eventgrid';
 import { EventSubscription } from 'azure-arm-eventgrid/lib/models';
 import { SubscriptionClient } from 'azure-arm-resource';
 import { Location } from 'azure-arm-resource/lib/subscription/models';
-import { AzureWizard, createAzureClient, createAzureSubscriptionClient, IActionContext, IAzureNode, IAzureTreeItem, IChildProvider, parseError } from 'vscode-azureextensionui';
+import { AzureWizard, createAzureClient, createAzureSubscriptionClient, IActionContext, ISubscriptionRoot, parseError, SubscriptionTreeItem } from 'vscode-azureextensionui';
 import { localize } from '../../utils/localize';
 import { EndpointUrlStep } from '../createWizard/EndpointUrlStep';
 import { EventSubscriptionCreateStep } from '../createWizard/EventSubscriptionCreateStep';
@@ -16,18 +16,18 @@ import { IEventSubscriptionWizardContext } from '../createWizard/IEventSubscript
 import { TopicTypeStep } from '../createWizard/TopicTypeStep';
 import { EventSubscriptionTreeItem } from './EventSubscriptionTreeItem';
 
-export class EventSubscriptionProvider implements IChildProvider {
+export class EventSubscriptionProvider extends SubscriptionTreeItem {
     public readonly childTypeLabel: string = localize('eventSubscription', 'Event Subscription');
 
-    public hasMoreChildren(): boolean {
+    public hasMoreChildrenImpl(): boolean {
         return false;
     }
 
-    public async loadMoreChildren(node: IAzureNode): Promise<IAzureTreeItem[]> {
-        const client: EventGridManagementClient = createAzureClient(node, EventGridManagementClient);
+    public async loadMoreChildrenImpl(_clearCache: boolean): Promise<EventSubscriptionTreeItem[]> {
+        const client: EventGridManagementClient = createAzureClient(this.root, EventGridManagementClient);
 
         // There is no "listAll" method - we have to list individually by location
-        const listByLocationTasks: Promise<EventSubscription[]>[] = (await listLocations(node)).map(async (location: Location) => {
+        const listByLocationTasks: Promise<EventSubscription[]>[] = (await listLocations(this.root)).map(async (location: Location) => {
             try {
                 // tslint:disable-next-line:no-non-null-assertion
                 return await client.eventSubscriptions.listRegionalBySubscription(location.name!);
@@ -41,16 +41,11 @@ export class EventSubscriptionProvider implements IChildProvider {
             }
         });
         const eventSubscriptions: EventSubscription[] = (<EventSubscription[]>[]).concat(...(await Promise.all([client.eventSubscriptions.listGlobalBySubscription()].concat(...listByLocationTasks))));
-        return eventSubscriptions.map((es: EventSubscription) => new EventSubscriptionTreeItem(es));
+        return eventSubscriptions.map((es: EventSubscription) => new EventSubscriptionTreeItem(this, es));
     }
 
-    public async createChild(node: IAzureNode, showCreatingNode: (label: string) => void, actionContext?: IActionContext): Promise<IAzureTreeItem> {
-        const wizardContext: IEventSubscriptionWizardContext = {
-            credentials: node.credentials,
-            subscriptionId: node.subscriptionId,
-            subscriptionDisplayName: node.subscriptionDisplayName,
-            environment: node.environment
-        };
+    public async createChildImpl(showCreatingNode: (label: string) => void, actionContext?: IActionContext): Promise<EventSubscriptionTreeItem> {
+        const wizardContext: IEventSubscriptionWizardContext = Object.assign({}, this.root);
 
         const wizard: AzureWizard<IEventSubscriptionWizardContext> = new AzureWizard(
             [
@@ -73,11 +68,11 @@ export class EventSubscriptionProvider implements IChildProvider {
         showCreatingNode(wizardContext.newEventSubscriptionName!);
         await wizard.execute(actionContext);
         // tslint:disable-next-line:no-non-null-assertion
-        return new EventSubscriptionTreeItem(wizardContext.eventSubscription!);
+        return new EventSubscriptionTreeItem(this, wizardContext.eventSubscription!);
     }
 }
 
-async function listLocations(node: IAzureNode): Promise<Location[]> {
-    const client: SubscriptionClient = createAzureSubscriptionClient(node, SubscriptionClient);
-    return await client.subscriptions.listLocations(node.subscriptionId);
+async function listLocations(root: ISubscriptionRoot): Promise<Location[]> {
+    const client: SubscriptionClient = createAzureSubscriptionClient(root, SubscriptionClient);
+    return await client.subscriptions.listLocations(root.subscriptionId);
 }
