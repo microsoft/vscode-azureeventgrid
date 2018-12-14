@@ -6,7 +6,6 @@ All notable changes to the "azureeventgrid" extension will be documented in this
 
 ### Added
 
-- Provisional support for sovereign accounts in Azure
 - Use notifications instead of opening output channel
 - Improved parsing of errors
 
