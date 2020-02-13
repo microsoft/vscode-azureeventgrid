@@ -380,8 +380,8 @@
         "tslint": "^5.7.0",
         "tslint-microsoft-contrib": "5.0.1",
         "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "vsce": "^1.37.5"
+        "vsce": "^1.37.5",
+        "vscode": "^1.1.36"
     },
     "dependencies": {
         "azure-arm-containerregistry": "^2.2.0",
