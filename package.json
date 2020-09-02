@@ -17,7 +17,7 @@
         "color": "#002050",
         "theme": "dark"
     },
-    "homepage": "https://github.com/Microsoft/vscode-azureeventgrid/blob/master/README.md",
+    "homepage": "https://github.com/Microsoft/vscode-azureeventgrid/blob/main/README.md",
     "license": "MIT",
     "categories": [
         "Azure"
