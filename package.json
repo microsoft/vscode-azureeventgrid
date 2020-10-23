@@ -358,7 +358,7 @@
     "scripts": {
         "build": "tsc -p ./",
         "compile": "tsc -watch -p ./",
-        "package": "vsce package",
+        "package": "vsce package --githubBranch main",
         "lint": "tslint --project tsconfig.json -t verbose",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "gulp test"
@@ -377,7 +377,7 @@
         "tslint": "^5.7.0",
         "tslint-microsoft-contrib": "5.0.1",
         "typescript": "^2.0.3",
-        "vsce": "^1.37.5",
+        "vsce": "^1.81.1",
         "vscode-azureextensiondev": "^0.2.4",
         "vscode": "^1.1.36"
     },
