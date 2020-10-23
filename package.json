@@ -358,7 +358,7 @@
     "scripts": {
         "build": "tsc -p ./",
         "compile": "tsc -watch -p ./",
-        "package": "vsce package",
+        "package": "vsce package --githubBranch main",
         "lint": "tslint --project tsconfig.json -t verbose",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "gulp test"
